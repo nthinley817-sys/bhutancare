@@ -1,24 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name^} - Health App</title>
-    <link rel="stylesheet" href="shared.css">
-    <script src="shared.js" defer></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BhutanCare — Appointments</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/appointments.css">
 </head>
 <body>
-    <header>
-        <h1>${name^}</h1>
-        <nav>
-            <a href="homepage.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <p>This is the ${name} page placeholder. Replace it with your real content.</p>
-        <button data-action="placeholder">Click me</button>
-    </main>
+<div class="app-shell">
+  <header class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+      <a class="topnav-logo" href="dashboard.html"><div class="topnav-logo-img"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="Logo"></div><span class="topnav-logo-name">BhutanCare</span></a>
+      <div class="topnav-divider"></div><span class="topnav-page-title">Appointments</span>
+    </div>
+    <div class="topnav-right">
+      <a class="topnav-btn emergency" href="tel:112"><i class="fa-solid fa-phone"></i> 112</a>
+      <button class="topnav-btn"><i class="fa-solid fa-bell"></i></button>
+      <button class="avatar-btn">KW</button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="nav-item" href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a class="nav-item active" href="appointments.html"><i class="fa-solid fa-calendar-check"></i> Appointments <span class="badge">3</span></a>
+      <a class="nav-item" href="token.html"><i class="fa-solid fa-ticket"></i> Token System</a>
+      <a class="nav-item" href="prescriptions.html"><i class="fa-solid fa-pills"></i> Prescriptions</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Records</div>
+      <a class="nav-item" href="history.html"><i class="fa-solid fa-clock-rotate-left"></i> Visit History</a>
+      <a class="nav-item" href="labresults.html"><i class="fa-solid fa-flask"></i> Lab Results</a>
+      <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Help</div>
+      <a class="nav-item" href="hospitals.html"><i class="fa-solid fa-hospital"></i> Hospitals</a>
+      <a class="nav-item" href="homepage.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">KW</div>
+      <div><div class="sidebar-user-name">Karma Wangchuk</div><div class="sidebar-user-role">Patient</div></div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header-row page-header">
+      <div><h1 class="page-header">Appointments</h1><p>Manage and book your hospital appointments</p></div>
+      <button class="btn btn-primary" data-modal-open="bookModal"><i class="fa-solid fa-calendar-plus"></i> Book New Appointment</button>
+    </div>
+    <div class="appt-filters">
+      <button class="filter-btn active" onclick="filterAppts('all',this)">All</button>
+      <button class="filter-btn" onclick="filterAppts('upcoming',this)">Upcoming</button>
+      <button class="filter-btn" onclick="filterAppts('completed',this)">Completed</button>
+      <button class="filter-btn" onclick="filterAppts('cancelled',this)">Cancelled</button>
+    </div>
+    <div id="apptList">
+      <div class="appt-card" data-status="upcoming">
+        <div class="appt-card-date"><div class="appt-card-day">15</div><div class="appt-card-mon">Jun</div></div>
+        <div class="appt-card-body">
+          <div class="appt-card-doctor">Dr. Dorji Namgyel</div>
+          <div class="appt-card-meta">
+            <span><i class="fa-solid fa-stethoscope"></i> Cardiology</span>
+            <span><i class="fa-solid fa-hospital"></i> JDWNRH, Thimphu</span>
+            <span><i class="fa-solid fa-clock"></i> 9:30 AM</span>
+            <span><span class="badge badge-green">Confirmed</span></span>
+          </div>
+        </div>
+        <div class="appt-card-actions">
+          <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-pen"></i> Reschedule</button>
+          <button class="btn btn-danger btn-sm" onclick="cancelAppt(this)"><i class="fa-solid fa-xmark"></i> Cancel</button>
+        </div>
+      </div>
+      <div class="appt-card" data-status="upcoming">
+        <div class="appt-card-date" style="background:var(--blue-pale)"><div class="appt-card-day" style="color:var(--blue)">18</div><div class="appt-card-mon" style="color:#1d4ed8">Jun</div></div>
+        <div class="appt-card-body">
+          <div class="appt-card-doctor">Dr. Tshering Pem</div>
+          <div class="appt-card-meta">
+            <span><i class="fa-solid fa-stethoscope"></i> General OPD</span>
+            <span><i class="fa-solid fa-hospital"></i> Paro District Hospital</span>
+            <span><i class="fa-solid fa-clock"></i> 2:00 PM</span>
+            <span><span class="badge badge-amber">Pending</span></span>
+          </div>
+        </div>
+        <div class="appt-card-actions">
+          <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-pen"></i> Reschedule</button>
+          <button class="btn btn-danger btn-sm" onclick="cancelAppt(this)"><i class="fa-solid fa-xmark"></i> Cancel</button>
+        </div>
+      </div>
+      <div class="appt-card" data-status="completed" style="opacity:0.7">
+        <div class="appt-card-date" style="background:#f3f4f6"><div class="appt-card-day" style="color:var(--text-muted)">03</div><div class="appt-card-mon" style="color:var(--text-muted)">Jun</div></div>
+        <div class="appt-card-body">
+          <div class="appt-card-doctor">Dr. Dorji Namgyel</div>
+          <div class="appt-card-meta">
+            <span><i class="fa-solid fa-stethoscope"></i> Cardiology</span>
+            <span><i class="fa-solid fa-hospital"></i> JDWNRH</span>
+            <span><i class="fa-solid fa-clock"></i> 10:00 AM</span>
+            <span><span class="badge badge-gray">Completed</span></span>
+          </div>
+        </div>
+        <div class="appt-card-actions">
+          <a href="history.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-medical"></i> View Record</a>
+        </div>
+      </div>
+    </div>
+    <div class="modal-overlay" id="bookModal">
+      <div class="modal" style="max-width:600px">
+        <div class="modal-header">
+          <div class="modal-title"><i class="fa-solid fa-calendar-plus" style="color:var(--green-main);margin-right:8px"></i>Book Appointment</div>
+          <button class="modal-close" data-modal-close="bookModal">&times;</button>
+        </div>
+        <div class="steps">
+          <div class="step done" id="step1"><div class="step-num"><i class="fa-solid fa-check"></i></div> Hospital</div>
+          <div class="step-line"></div>
+          <div class="step active" id="step2"><div class="step-num">2</div> Doctor</div>
+          <div class="step-line"></div>
+          <div class="step" id="step3"><div class="step-num">3</div> Date &amp; Time</div>
+          <div class="step-line"></div>
+          <div class="step" id="step4"><div class="step-num">4</div> Confirm</div>
+        </div>
+        <div id="stepContent">
+          <div id="stepPanel1" style="display:none">
+            <div class="form-group mb-16"><label>Select Hospital</label><select class="form-control"><option value="">Choose hospital...</option><option>JDWNRH — Thimphu</option><option>Paro District Hospital</option><option>Punakha District Hospital</option><option>Gelephu Regional Referral Hospital</option></select></div>
+            <div class="form-group"><label>Department</label><select class="form-control"><option value="">Choose department...</option><option>General OPD</option><option>Cardiology</option><option>Orthopedics</option><option>Pediatrics</option><option>Gynecology</option><option>ENT</option><option>Eye / Ophthalmology</option></select></div>
+          </div>
+          <div id="stepPanel2">
+            <p class="text-sm text-muted mb-16">Available doctors in <strong>Cardiology · JDWNRH</strong></p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="doctor-option selected" onclick="selectDoctor(this)">
+                <div class="doctor-avatar" style="background:var(--blue)">DN</div>
+                <div class="doctor-info"><div class="doctor-info-name">Dr. Dorji Namgyel</div><div class="doctor-info-spec">Cardiologist · 15 years experience</div><div class="doctor-info-avail"><i class="fa-solid fa-circle" style="font-size:8px"></i> Available Mon, Wed, Fri</div></div>
+                <div style="margin-left:auto"><span class="badge badge-green">Available</span></div>
+              </div>
+              <div class="doctor-option" onclick="selectDoctor(this)">
+                <div class="doctor-avatar" style="background:var(--green-main)">RW</div>
+                <div class="doctor-info"><div class="doctor-info-name">Dr. Rinchen Wangmo</div><div class="doctor-info-spec">Cardiologist · 9 years experience</div><div class="doctor-info-avail"><i class="fa-solid fa-circle" style="font-size:8px"></i> Available Tue, Thu</div></div>
+                <div style="margin-left:auto"><span class="badge badge-amber">Limited</span></div>
+              </div>
+            </div>
+          </div>
+          <div id="stepPanel3" style="display:none">
+            <div class="form-group mb-16"><label>Select Date</label><input type="date" class="form-control" id="apptDate"></div>
+            <label class="fw-600 text-sm" style="display:block;margin-bottom:10px">Select Time Slot</label>
+            <div class="time-slots">
+              <button class="time-slot taken">8:00 AM</button>
+              <button class="time-slot" onclick="selectSlot(this)">8:30 AM</button>
+              <button class="time-slot taken">9:00 AM</button>
+              <button class="time-slot" onclick="selectSlot(this)">9:30 AM</button>
+              <button class="time-slot selected" onclick="selectSlot(this)">10:00 AM</button>
+              <button class="time-slot" onclick="selectSlot(this)">10:30 AM</button>
+              <button class="time-slot taken">11:00 AM</button>
+              <button class="time-slot" onclick="selectSlot(this)">2:00 PM</button>
+              <button class="time-slot" onclick="selectSlot(this)">2:30 PM</button>
+              <button class="time-slot taken">3:00 PM</button>
+              <button class="time-slot" onclick="selectSlot(this)">3:30 PM</button>
+              <button class="time-slot" onclick="selectSlot(this)">4:00 PM</button>
+            </div>
+          </div>
+          <div id="stepPanel4" style="display:none">
+            <div class="alert alert-info mb-16"><i class="fa-solid fa-circle-info"></i><span>Please review your appointment details before confirming.</span></div>
+            <div style="background:var(--green-xpale);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:12px">
+              <div class="flex-between"><span class="text-sm text-muted">Doctor</span><span class="fw-600">Dr. Dorji Namgyel</span></div>
+              <div class="flex-between"><span class="text-sm text-muted">Hospital</span><span class="fw-600">JDWNRH, Thimphu</span></div>
+              <div class="flex-between"><span class="text-sm text-muted">Department</span><span class="fw-600">Cardiology</span></div>
+              <div class="flex-between"><span class="text-sm text-muted">Date</span><span class="fw-600">June 25, 2026</span></div>
+              <div class="flex-between"><span class="text-sm text-muted">Time</span><span class="fw-600">10:00 AM</span></div>
+            </div>
+            <div class="form-group mt-16"><label>Reason / Notes (optional)</label><textarea class="form-control" rows="3" placeholder="Describe your symptoms..."></textarea></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display:none"><i class="fa-solid fa-arrow-left"></i> Back</button>
+          <button class="btn btn-secondary" data-modal-close="bookModal">Cancel</button>
+          <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-container"></div>
+<script src="../js/shared.js"></script>
+<script src="../js/appointments.js"></script>
 </body>
 </html>

@@ -1,24 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name^} - Health App</title>
-    <link rel="stylesheet" href="shared.css">
-    <script src="shared.js" defer></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BhutanCare — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 <body>
-    <header>
-        <h1>${name^}</h1>
-        <nav>
-            <a href="homepage.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <p>This is the ${name} page placeholder. Replace it with your real content.</p>
-        <button data-action="placeholder">Click me</button>
-    </main>
+<div class="app-shell">
+  <header class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+      <a class="topnav-logo" href="dashboard.html">
+        <div class="topnav-logo-img"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="Logo"></div>
+        <span class="topnav-logo-name">BhutanCare</span>
+      </a>
+      <div class="topnav-divider"></div>
+      <span class="topnav-page-title">Dashboard</span>
+    </div>
+    <div class="topnav-right">
+      <a class="topnav-btn emergency" href="tel:112"><i class="fa-solid fa-phone"></i> 112</a>
+      <button class="topnav-btn"><i class="fa-solid fa-bell"></i></button>
+      <button class="avatar-btn">KW</button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="nav-item active" href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a class="nav-item" href="appointments.html"><i class="fa-solid fa-calendar-check"></i> Appointments <span class="badge">3</span></a>
+      <a class="nav-item" href="token.html"><i class="fa-solid fa-ticket"></i> Token System</a>
+      <a class="nav-item" href="prescriptions.html"><i class="fa-solid fa-pills"></i> Prescriptions</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Records</div>
+      <a class="nav-item" href="history.html"><i class="fa-solid fa-clock-rotate-left"></i> Visit History</a>
+      <a class="nav-item" href="labresults.html"><i class="fa-solid fa-flask"></i> Lab Results</a>
+      <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Help</div>
+      <a class="nav-item" href="hospitals.html"><i class="fa-solid fa-hospital"></i> Hospitals</a>
+      <a class="nav-item" href="homepage.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">KW</div>
+      <div><div class="sidebar-user-name">Karma Wangchuk</div><div class="sidebar-user-role">Patient · CID 11101...</div></div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="hero-banner">
+      <div class="hero-left">
+        <h2>Good morning, Karma!</h2>
+        <p>You have 3 upcoming appointments and 1 pending token. Stay healthy!</p>
+        <div class="hero-actions">
+          <a href="appointments.html" class="hero-btn hero-btn-white"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
+          <a href="token.html" class="hero-btn hero-btn-outline"><i class="fa-solid fa-ticket"></i> Get Token</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="token-display">
+          <div class="token-label">Your Token</div>
+          <div class="token-num">A-47</div>
+          <div class="token-sub">OPD · Est. 25 min</div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-calendar-check"></i></div><div><div class="stat-num">3</div><div class="stat-label">Upcoming Appointments</div><div class="stat-delta up">+1 this week</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-pills"></i></div><div><div class="stat-num">5</div><div class="stat-label">Active Prescriptions</div><div class="stat-delta up">Refill due soon</div></div></div>
+      <div class="stat-card"><div class="stat-icon amber"><i class="fa-solid fa-flask"></i></div><div><div class="stat-num">2</div><div class="stat-label">Pending Lab Results</div><div class="stat-delta down">Review needed</div></div></div>
+      <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-clock-rotate-left"></i></div><div><div class="stat-num">12</div><div class="stat-label">Total Visits</div><div class="stat-delta up">Since 2022</div></div></div>
+    </div>
+    <div class="quick-grid">
+      <a class="quick-card" href="appointments.html"><div class="quick-card-icon" style="background:var(--green-pale);color:var(--green-main)"><i class="fa-solid fa-calendar-plus"></i></div><div class="quick-card-label">Book Appointment</div></a>
+      <a class="quick-card" href="token.html"><div class="quick-card-icon" style="background:var(--blue-pale);color:var(--blue)"><i class="fa-solid fa-ticket"></i></div><div class="quick-card-label">Token System</div></a>
+      <a class="quick-card" href="prescriptions.html"><div class="quick-card-icon" style="background:var(--purple-pale);color:var(--purple)"><i class="fa-solid fa-pills"></i></div><div class="quick-card-label">Prescriptions</div></a>
+      <a class="quick-card" href="labresults.html"><div class="quick-card-icon" style="background:var(--amber-pale);color:var(--amber)"><i class="fa-solid fa-flask"></i></div><div class="quick-card-label">Lab Results</div></a>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Upcoming Appointments</div><div class="card-sub">Next 7 days</div></div><a href="appointments.html" class="btn btn-secondary btn-sm">View all</a></div>
+        <div class="upcoming-item"><div class="appt-date"><div class="appt-day">15</div><div class="appt-mon">Jun</div></div><div class="appt-info"><div class="appt-doctor">Dr. Dorji Namgyel</div><div class="appt-dept">Cardiology · JDWNRH</div></div><div class="appt-time-badge"><i class="fa-solid fa-clock"></i> 9:30 AM</div></div>
+        <div class="upcoming-item"><div class="appt-date"><div class="appt-day">18</div><div class="appt-mon">Jun</div></div><div class="appt-info"><div class="appt-doctor">Dr. Tshering Pem</div><div class="appt-dept">General OPD · Paro Hosp.</div></div><div class="appt-time-badge"><i class="fa-solid fa-clock"></i> 2:00 PM</div></div>
+        <div class="upcoming-item"><div class="appt-date"><div class="appt-day">22</div><div class="appt-mon">Jun</div></div><div class="appt-info"><div class="appt-doctor">Dr. Sonam Jamtsho</div><div class="appt-dept">Orthopedics · Gelephu</div></div><div class="appt-time-badge"><i class="fa-solid fa-clock"></i> 11:00 AM</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Today's Medications</div><div class="card-sub">June 11, 2026</div></div><a href="prescriptions.html" class="btn btn-secondary btn-sm">View all</a></div>
+        <div class="med-item"><div class="med-icon" style="background:var(--blue-pale);color:var(--blue)"><i class="fa-solid fa-capsules"></i></div><div><div class="med-name">Amlodipine 5mg</div><div class="med-dose">1 tablet · After food</div></div><div class="med-time"><strong>8:00 AM</strong>done</div></div>
+        <div class="med-item"><div class="med-icon" style="background:var(--amber-pale);color:var(--amber)"><i class="fa-solid fa-tablets"></i></div><div><div class="med-name">Metformin 500mg</div><div class="med-dose">1 tablet · With meals</div></div><div class="med-time"><strong>1:00 PM</strong>pending</div></div>
+        <div class="med-item"><div class="med-icon" style="background:var(--green-pale);color:var(--green-main)"><i class="fa-solid fa-pills"></i></div><div><div class="med-name">Atorvastatin 10mg</div><div class="med-dose">1 tablet · Bedtime</div></div><div class="med-time"><strong>9:00 PM</strong>upcoming</div></div>
+      </div>
+    </div>
+    <div class="grid-3 mt-24">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Recent Activity</div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--green-main)"></div><div><div class="activity-text">Appointment confirmed with Dr. Dorji Namgyel</div><div class="activity-time">Today, 10:32 AM</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--blue)"></div><div><div class="activity-text">Lab results uploaded — Blood panel available</div><div class="activity-time">Yesterday, 3:15 PM</div></div></div>
+        <div class="activity-item"><div class="activity-dot" style="background:var(--amber)"></div><div><div class="activity-text">Prescription renewed by Dr. Tshering Pem</div><div class="activity-time">Jun 5, 9:00 AM</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Health Summary</div></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="flex-between"><span class="text-sm text-muted">Blood Pressure</span><span class="badge badge-amber">128/82 mmHg</span></div>
+          <div class="flex-between"><span class="text-sm text-muted">Blood Sugar</span><span class="badge badge-green">98 mg/dL</span></div>
+          <div class="flex-between"><span class="text-sm text-muted">BMI</span><span class="badge badge-green">22.4</span></div>
+          <div class="flex-between"><span class="text-sm text-muted">Cholesterol</span><span class="badge badge-amber">210 mg/dL</span></div>
+          <div class="flex-between"><span class="text-sm text-muted">Blood Group</span><span class="badge badge-red">B+</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Alerts &amp; Reminders</div></div>
+        <div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i><span>Metformin refill due in <strong>3 days</strong>.</span></div>
+        <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><span>Annual eye check-up overdue by 2 months.</span></div>
+        <div class="alert alert-success"><i class="fa-solid fa-circle-check"></i><span>COVID-19 booster vaccination up to date.</span></div>
+        <div class="alert alert-error"><i class="fa-solid fa-circle-xmark"></i><span>Lab result review with Dr. Dorji on Jun 15.</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-container"></div>
+<script src="../js/shared.js"></script>
+<script src="../js/dashboard.js"></script>
 </body>
 </html>

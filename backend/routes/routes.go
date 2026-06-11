@@ -1,26 +1,37 @@
 package routes
 
 import (
+	"bhutancare/handlers"
+	"bhutancare/middleware"
 	"net/http"
 
-	"my-app/backend/handlers"
-	"my-app/backend/middleware"
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
-func SetupRoutes() *http.ServeMux {
-	mux := http.NewServeMux()
+func Setup() http.Handler {
+	r := mux.NewRouter()
 
-	// auth endpoints used by frontend
-	mux.HandleFunc("/api/auth/login", handlers.LoginHandler)
-	mux.HandleFunc("/api/auth/register", handlers.RegisterHandler)
-	// keep legacy routes for compatibility
-	mux.HandleFunc("/api/login", handlers.LoginHandler)
-	mux.HandleFunc("/api/register", handlers.RegisterHandler)
-	mux.Handle("/api/appointments", middleware.RequireAuth(http.HandlerFunc(handlers.AppointmentsHandler)))
-	mux.Handle("/api/tokens", middleware.RequireAuth(http.HandlerFunc(handlers.TokensHandler)))
-	mux.Handle("/api/prescriptions", middleware.RequireAuth(http.HandlerFunc(handlers.PrescriptionsHandler)))
-	mux.Handle("/api/labresults", middleware.RequireAuth(http.HandlerFunc(handlers.LabResultsHandler)))
-	mux.Handle("/api/profile", middleware.RequireAuth(http.HandlerFunc(handlers.ProfileHandler)))
+	// Public routes
+	r.HandleFunc("/api/auth/register", handlers.RegisterHandler).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/login",    handlers.LoginHandler).Methods("POST", "OPTIONS")
 
-	return mux
+	// Protected routes
+	api := r.PathPrefix("/api").Subrouter()
+	api.Use(middleware.RequireAuth)
+	api.HandleFunc("/profile",      handlers.ProfileHandler).Methods("GET", "PUT")
+	api.HandleFunc("/appointments", handlers.AppointmentsHandler).Methods("GET", "POST")
+	api.HandleFunc("/tokens",       handlers.TokensHandler).Methods("GET", "POST")
+	api.HandleFunc("/prescriptions",handlers.PrescriptionsHandler).Methods("GET", "POST")
+
+	// Serve frontend
+	frontend := http.FileServer(http.Dir("/workspaces/my-app/frontend/"))
+	r.PathPrefix("/").Handler(frontend)
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	})
+	return c.Handler(r)
 }

@@ -1,24 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name^} - Health App</title>
-    <link rel="stylesheet" href="shared.css">
-    <script src="shared.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BhutanCare – Your Health, Our Priority</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/homepage.css">
 </head>
 <body>
-    <header>
-        <h1>${name^}</h1>
-        <nav>
-            <a href="homepage.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <p>This is the ${name} page placeholder. Replace it with your real content.</p>
-        <button data-action="placeholder">Click me</button>
-    </main>
+<nav id="navbar">
+  <a class="nav-brand" href="homepage.html">
+    <div class="nav-logo"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="MOH Logo"></div>
+    <div class="nav-brand-text"><strong>BhutanCare</strong><span>Your Health, Our Priority</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#hospitals">Hospitals</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="btn-emergency" href="tel:112"><i class="fa-solid fa-phone"></i> Emergency: 112</a>
+    <a class="btn-login" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login / Register</a>
+    <button class="btn-lang" title="Language"><i class="fa-solid fa-globe"></i></button>
+    <button class="btn-lang" id="themeToggle" title="Toggle theme"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+  </div>
+  <button class="hamburger" id="hamburger" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-inner">
+    <span class="mob-section-label">Navigation</span>
+    <a href="#" class="mob-link active">
+      <div class="mob-icon"><i class="fa-solid fa-house"></i></div>
+      <div class="mob-link-text"><strong>Home</strong><small>Back to homepage</small></div>
+    </a>
+    <a href="#services" class="mob-link">
+      <div class="mob-icon"><i class="fa-solid fa-stethoscope"></i></div>
+      <div class="mob-link-text"><strong>Services</strong><small>Appointments, records & more</small></div>
+    </a>
+    <a href="#hospitals" class="mob-link">
+      <div class="mob-icon"><i class="fa-solid fa-hospital"></i></div>
+      <div class="mob-link-text"><strong>Hospitals</strong><small>Find hospitals near you</small></div>
+    </a>
+    <a href="#contact" class="mob-link">
+      <div class="mob-icon"><i class="fa-solid fa-envelope"></i></div>
+      <div class="mob-link-text"><strong>Contact</strong><small>Get in touch with us</small></div>
+    </a>
+    <div class="mob-divider"></div>
+    <span class="mob-section-label">Quick Access</span>
+    <div class="mob-actions">
+      <a class="mob-emergency-btn" href="tel:112"><i class="fa-solid fa-phone"></i> Emergency Hotline: 112</a>
+      <a class="mob-login-btn" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login / Register</a>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge"><div class="hero-badge-dot"></div> Bhutan's National Digital Health Platform</div>
+      <h1 class="hero-title">Welcome to <span class="hero-title-colored">BhutanCare</span></h1>
+      <p class="hero-subtitle">Your Health, Our Priority. Book appointments, manage your medical records, and access Bhutan's top hospitals — all in one place.</p>
+      <div class="hero-cta">
+        <a href="login.html" class="btn-primary"><i class="fa-solid fa-circle-arrow-right"></i> Get Started</a>
+        <a href="#hospitals" class="btn-outline"><i class="fa-solid fa-hospital"></i> Find a Hospital</a>
+      </div>
+      <div class="hero-emergency-card">
+        <div class="hero-emergency-left">
+          <div class="emergency-icon"><i class="fa-solid fa-truck-medical"></i></div>
+          <div class="emergency-text">
+            <strong>24/7 Emergency Hotline</strong>
+            <span>Call 112 for immediate hospital support across Bhutan</span>
+          </div>
+        </div>
+        <button class="btn-call" onclick="window.location.href='tel:112'"><i class="fa-solid fa-phone"></i> Call 112</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-emblem-wrap">
+        <div class="hero-emblem"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="Bhutan Health Logo"></div>
+      </div>
+      <div class="hero-quick-actions">
+        <a href="login.html" class="quick-action"><i class="fa-solid fa-calendar-check"></i><span>Book Appointment</span></a>
+        <a href="login.html" class="quick-action"><i class="fa-solid fa-ticket"></i><span>Token System</span></a>
+        <a href="login.html" class="quick-action"><i class="fa-solid fa-file-medical"></i><span>Health Records</span></a>
+        <a href="tel:112"   class="quick-action"><i class="fa-solid fa-truck-medical"></i><span>Emergency</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div class="stat-item fade-up"><div class="stat-num" data-target="20" data-suffix="+">0+</div><div class="stat-label">Hospitals</div></div>
+    <div class="stat-item fade-up"><div class="stat-num" data-target="200" data-suffix="+">0+</div><div class="stat-label">Doctors</div></div>
+    <div class="stat-item fade-up"><div class="stat-num" data-target="50" data-suffix="K+">0K+</div><div class="stat-label">Patients Served</div></div>
+    <div class="stat-item fade-up"><div class="stat-num">24/7</div><div class="stat-label">Emergency Care</div></div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="section-header fade-up">
+    <h2 class="section-title">Everything You Need</h2>
+    <p class="section-sub">BhutanCare brings Bhutan's hospital system into your hands with a simple, accessible digital experience.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card fade-up"><div class="service-icon-wrap blue"><i class="fa-solid fa-calendar-days"></i></div><h3>Online Appointments</h3><p>Book consultations with doctors across all major hospitals in Bhutan.</p></div>
+    <div class="service-card fade-up"><div class="service-icon-wrap green"><i class="fa-solid fa-ticket"></i></div><h3>Token System</h3><p>Skip the queue. Get your OPD token and check live waiting times.</p></div>
+    <div class="service-card fade-up"><div class="service-icon-wrap purple"><i class="fa-solid fa-file-medical"></i></div><h3>Health Records</h3><p>Access your complete medical history, prescriptions, and lab reports.</p></div>
+    <div class="service-card fade-up"><div class="service-icon-wrap red"><i class="fa-solid fa-truck-medical"></i></div><h3>Emergency Guidance</h3><p>Instant access to emergency contacts and the nearest hospital.</p></div>
+  </div>
+</section>
+
+<section class="hospitals" id="hospitals">
+  <div class="hospitals-inner">
+    <div class="hospitals-header">
+      <div><h2>Featured Hospitals</h2><p>Serving communities across the Kingdom of Bhutan</p></div>
+      <a href="#" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="hospitals-grid">
+      <div class="hospital-card fade-up">
+        <div class="hospital-icon"><i class="fa-solid fa-hospital"></i></div>
+        <h3>Jigme Dorji Wangchuck National Referral Hospital</h3>
+        <div class="hospital-meta"><div class="hospital-location"><i class="fa-solid fa-location-dot"></i> Thimphu</div><div class="hospital-rating"><i class="fa-solid fa-star star"></i> 4.8</div></div>
+        <div class="hospital-tags"><span class="tag">General</span><span class="tag">Emergency</span><span class="tag">Cardiology</span><span class="tag-more">+1</span></div>
+        <button class="btn-view-details">View Details</button>
+      </div>
+      <div class="hospital-card fade-up">
+        <div class="hospital-icon"><i class="fa-solid fa-hospital"></i></div>
+        <h3>Paro District Hospital</h3>
+        <div class="hospital-meta"><div class="hospital-location"><i class="fa-solid fa-location-dot"></i> Paro</div><div class="hospital-rating"><i class="fa-solid fa-star star"></i> 4.5</div></div>
+        <div class="hospital-tags"><span class="tag">General</span><span class="tag">Dental</span><span class="tag">Eye</span></div>
+        <button class="btn-view-details">View Details</button>
+      </div>
+      <div class="hospital-card fade-up">
+        <div class="hospital-icon"><i class="fa-solid fa-hospital"></i></div>
+        <h3>Punakha District Hospital</h3>
+        <div class="hospital-meta"><div class="hospital-location"><i class="fa-solid fa-location-dot"></i> Punakha</div><div class="hospital-rating"><i class="fa-solid fa-star star"></i> 4.4</div></div>
+        <div class="hospital-tags"><span class="tag">General</span><span class="tag">Surgery</span><span class="tag">Pediatrics</span></div>
+        <button class="btn-view-details">View Details</button>
+      </div>
+      <div class="hospital-card fade-up">
+        <div class="hospital-icon"><i class="fa-solid fa-hospital"></i></div>
+        <h3>Gelephu Regional Referral Hospital</h3>
+        <div class="hospital-meta"><div class="hospital-location"><i class="fa-solid fa-location-dot"></i> Gelephu</div><div class="hospital-rating"><i class="fa-solid fa-star star"></i> 4.6</div></div>
+        <div class="hospital-tags"><span class="tag">Emergency</span><span class="tag">General</span><span class="tag">Eye</span></div>
+        <button class="btn-view-details">View Details</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <div class="cta-inner fade-up">
+    <h2>Ready to take charge of your health?</h2>
+    <p>Join thousands of Bhutanese citizens already using BhutanCare to manage their healthcare digitally.</p>
+    <a href="login.html" class="btn-cta"><i class="fa-solid fa-user-plus"></i> Create Free Account</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    <div class="footer-logo"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="MOH Logo"></div>
+    <div class="footer-brand-text"><strong>BhutanCare</strong><span>Ministry of Health, Bhutan</span></div>
+  </div>
+  <div class="footer-copy">© 2026 BhutanCare – Kingdom of Bhutan. All rights reserved.</div>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Accessibility</a></div>
+</footer>
+
+<a class="fab-emergency" href="tel:112"><i class="fa-solid fa-phone"></i> 112</a>
+<button class="fab-chat"><i class="fa-solid fa-comment-dots"></i></button>
+
+<script src="../js/homepage.js"></script>
 </body>
 </html>
