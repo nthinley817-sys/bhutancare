@@ -5,8 +5,9 @@ import (
 	"bhutancare/middleware"
 	"encoding/json"
 	"net/http"
-	"golang.org/x/crypto/bcrypt"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserProfile struct {
@@ -56,14 +57,13 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 func updateProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 
-	// Decode all possible fields
 	var inp map[string]interface{}
 	if err := json.NewDecoder(r.Body).Decode(&inp); err != nil {
 		jsonError(w, "Invalid body", http.StatusBadRequest)
 		return
 	}
 
-	// Fetch current values from DB
+	// Fetch current values
 	var cur UserProfile
 	config.DB.QueryRow(
 		`SELECT phone, blood_group, COALESCE(dob::text,''),
@@ -73,7 +73,6 @@ func updateProfile(w http.ResponseWriter, r *http.Request) {
 		&cur.Dzongkhag, &cur.Village, &cur.Gender,
 		&cur.HeightCM, &cur.WeightKG)
 
-	// Only overwrite fields that were actually sent
 	getString := func(key, fallback string) string {
 		if v, ok := inp[key]; ok && v != nil {
 			if s, ok := v.(string); ok { return s }
@@ -126,7 +125,10 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 		CurrentPassword string `json:"current_password"`
 		NewPassword     string `json:"new_password"`
 	}
-	json.NewDecoder(r.Body).Decode(&inp)
+	if err := json.NewDecoder(r.Body).Decode(&inp); err != nil {
+		jsonError(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
 
 	if inp.CurrentPassword == "" || inp.NewPassword == "" {
 		jsonError(w, "All fields required", http.StatusBadRequest)
@@ -160,7 +162,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update password
+	// Save new password
 	config.DB.Exec(`UPDATE users SET password=$1 WHERE id=$2`, string(newHashed), userID)
 
 	w.Header().Set("Content-Type", "application/json")
