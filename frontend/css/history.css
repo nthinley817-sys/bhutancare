@@ -1,1 +1,22 @@
-/* history page styles */
+/* history page styles - loaded after shared.css */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:24px}
+.timeline-dot{position:absolute;left:-32px;top:18px;width:16px;height:16px;border-radius:50%;background:var(--green-main);border:3px solid white;box-shadow:0 0 0 2px var(--green-main)}
+.visit-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:box-shadow 0.2s}
+.visit-card:hover{box-shadow:var(--shadow)}
+.visit-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;gap:12px}
+.visit-header-left{display:flex;align-items:center;gap:14px}
+.visit-date-badge{text-align:center;min-width:50px;padding:8px;background:var(--green-pale);border-radius:var(--radius-sm)}
+.visit-date-day{font-size:20px;font-weight:800;color:var(--green-main);line-height:1}
+.visit-date-mon{font-size:10px;text-transform:uppercase;color:var(--green-dark);font-weight:600}
+.visit-title{font-size:15px;font-weight:700;color:var(--text)}
+.visit-doctor{font-size:13px;color:var(--text-muted);margin-top:2px}
+.visit-body{padding:0 20px 20px;display:none}
+.visit-body.open{display:block;border-top:1px solid var(--border);padding-top:16px}
+.visit-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.visit-detail-item{background:var(--green-xpale);border-radius:var(--radius-sm);padding:12px}
+.visit-detail-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.visit-detail-value{font-size:14px;font-weight:600;color:var(--text)}
+.chevron{transition:transform 0.2s;color:var(--text-muted)}
+.chevron.open{transform:rotate(180deg)}

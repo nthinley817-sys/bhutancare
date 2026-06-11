@@ -1,1 +1,14 @@
-/* labresults page styles */
+/* labresults page styles - loaded after shared.css */
+.result-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #f3f4f6}
+.result-row:last-child{border-bottom:none}
+.result-name{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+.result-val{font-size:15px;font-weight:700;min-width:80px;text-align:right}
+.result-range{font-size:12px;color:var(--text-muted);min-width:120px;text-align:right}
+.val-normal{color:var(--green-main)}.val-high{color:var(--red)}.val-low{color:var(--amber)}
+.indicator{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ind-normal{background:var(--green-main)}.ind-high{background:var(--red)}.ind-low{background:var(--amber)}
+.lab-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px}
+.lab-card-header{padding:16px 20px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.lab-card-title{font-size:15px;font-weight:700;color:var(--text)}
+.lab-card-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
+.lab-card-body{padding:4px 20px}

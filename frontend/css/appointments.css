@@ -1,1 +1,33 @@
-/* appointments page styles */
+/* appointments page styles - loaded after shared.css */
+.appt-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all 0.2s;font-family:var(--font-body)}
+.filter-btn:hover,.filter-btn.active{border-color:var(--green-main);color:var(--green-main);background:var(--green-pale)}
+.appt-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;align-items:center;gap:18px;transition:all 0.2s;margin-bottom:12px}
+.appt-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.appt-card-date{text-align:center;min-width:54px;padding:10px;background:var(--green-pale);border-radius:var(--radius)}
+.appt-card-day{font-size:26px;font-weight:800;color:var(--green-main);line-height:1}
+.appt-card-mon{font-size:11px;color:var(--green-dark);text-transform:uppercase;font-weight:600}
+.appt-card-body{flex:1}
+.appt-card-doctor{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.appt-card-meta{display:flex;gap:14px;flex-wrap:wrap}
+.appt-card-meta span{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.appt-card-actions{display:flex;gap:8px;flex-shrink:0}
+.steps{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-muted)}
+.step.active{color:var(--green-main)}.step.done{color:var(--green-main)}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--border);color:var(--text-muted);flex-shrink:0}
+.step.active .step-num{background:var(--green-main);color:white}
+.step.done .step-num{background:var(--green-pale);color:var(--green-main)}
+.step-line{flex:1;height:2px;background:var(--border);min-width:30px}
+.doctor-option{border:2px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:14px}
+.doctor-option:hover{border-color:var(--green-main)}
+.doctor-option.selected{border-color:var(--green-main);background:var(--green-xpale)}
+.doctor-avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0}
+.doctor-info-name{font-size:15px;font-weight:700;color:var(--text)}
+.doctor-info-spec{font-size:13px;color:var(--text-muted)}
+.doctor-info-avail{font-size:12px;font-weight:600;color:var(--green-main);margin-top:3px}
+.time-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.time-slot{padding:9px;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--text-mid);background:white;font-family:var(--font-body)}
+.time-slot:hover{border-color:var(--green-main);color:var(--green-main)}
+.time-slot.selected{border-color:var(--green-main);background:var(--green-main);color:white}
+.time-slot.taken{background:#f3f4f6;color:var(--text-light);cursor:not-allowed;text-decoration:line-through}

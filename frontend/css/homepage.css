@@ -1,1 +1,131 @@
-/* homepage page styles */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green-dark:#1a4731;--green-mid:#1e6b45;--green-main:#2d8653;--green-light:#3fa96a;--green-pale:#e8f5ee;--green-accent:#4eca7f;--red-emergency:#e53e3e;--gold:#d4a017;--white:#fff;--text-dark:#111827;--text-mid:#374151;--text-light:#6b7280;--bg-section:#f0f7f3;--card-shadow:0 4px 24px rgba(30,107,69,0.10);--nav-h:68px}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--white);overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:var(--nav-h);background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,134,83,0.10);box-shadow:0 2px 16px rgba(26,71,49,0.07);transition:box-shadow 0.3s;gap:1.5rem}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.nav-logo{width:44px;height:44px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:white;border:2px solid var(--green-pale);flex-shrink:0}
+.nav-logo img{width:100%;height:100%;object-fit:contain}
+.nav-brand-text strong{font-family:'Playfair Display',serif;font-size:19px;color:var(--green-dark);line-height:1.1}
+.nav-brand-text span{font-size:11px;color:var(--text-light);font-weight:400}
+.nav-links{display:flex;gap:4px;list-style:none}
+.nav-links a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--text-mid);text-decoration:none;transition:all 0.2s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{background:var(--green-pale);color:var(--green-main);font-weight:600}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-emergency{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--red-emergency);background:transparent;color:var(--red-emergency);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.btn-emergency:hover{background:var(--red-emergency);color:white}
+.btn-login{display:flex;align-items:center;gap:7px;padding:9px 20px;border-radius:8px;border:none;background:var(--green-main);color:white;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.btn-login:hover{background:var(--green-dark)}
+.btn-lang{width:36px;height:36px;border-radius:8px;border:1px solid #e5e7eb;background:white;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--text-mid);transition:all 0.2s;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:42px;height:42px;background:none;border:1.5px solid #e5e7eb;border-radius:9px;cursor:pointer;flex-shrink:0;padding:0;z-index:101}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text-dark);border-radius:2px;transition:all 0.35s;transform-origin:center}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{position:fixed;top:var(--nav-h);left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border-bottom:2px solid rgba(45,134,83,0.15);box-shadow:0 12px 40px rgba(26,71,49,0.15);z-index:99;max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease;opacity:0;pointer-events:none}
+.mobile-menu.open{max-height:600px;opacity:1;pointer-events:all}
+.mobile-menu-inner{padding:1.25rem 1.5rem 2rem;display:flex;flex-direction:column;gap:0.2rem}
+.mob-section-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);padding:0.5rem 0.9rem 0.25rem;margin-top:0.4rem}
+.mob-link{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-mid);font-size:15px;font-weight:500;padding:0.75rem 1rem;border-radius:10px;transition:background 0.2s,color 0.2s,transform 0.15s}
+.mob-link .mob-icon{width:34px;height:34px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-light);flex-shrink:0}
+.mob-link:hover,.mob-link.active{background:var(--green-pale);color:var(--green-main);transform:translateX(3px)}
+.mob-link-text strong{font-size:14px;font-weight:600;line-height:1.2}
+.mob-link-text small{font-size:12px;color:var(--text-light);font-weight:400;margin-top:1px}
+.mob-divider{height:1px;background:linear-gradient(to right,transparent,#e5e7eb,transparent);margin:0.75rem 0}
+.mob-actions{display:flex;flex-direction:column;gap:0.6rem;padding-top:0.25rem}
+.mob-emergency-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:0.85rem;border-radius:10px;border:1.5px solid var(--red-emergency);background:transparent;color:var(--red-emergency);font-size:14px;font-weight:700;text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.mob-emergency-btn:hover{background:var(--red-emergency);color:white}
+.mob-login-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:0.85rem;border-radius:10px;background:var(--green-main);color:white;font-size:14px;font-weight:700;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.mob-login-btn:hover{background:var(--green-dark)}
+.hero{min-height:100vh;background:linear-gradient(135deg,var(--green-dark) 0%,var(--green-mid) 50%,var(--green-main) 100%);display:flex;align-items:center;padding:68px 40px 0;position:relative;overflow:hidden}
+.hero-inner{max-width:1280px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.hero-left{position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);font-size:13px;font-weight:500;margin-bottom:28px;backdrop-filter:blur(8px)}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--green-accent)}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(40px,6vw,68px);line-height:1.1;color:white;margin-bottom:8px}
+.hero-title-colored{color:var(--green-accent);display:block}
+.hero-subtitle{font-size:17px;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:36px;max-width:520px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;border:none;background:white;color:var(--green-dark);font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s;box-shadow:0 4px 20px rgba(0,0,0,0.15);font-family:'DM Sans',sans-serif}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.2)}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.5);background:transparent;color:white;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.btn-outline:hover{background:rgba(255,255,255,0.1);border-color:white}
+.hero-emergency-card{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(10px);max-width:500px}
+.hero-emergency-left{display:flex;align-items:center;gap:14px}
+.emergency-icon{width:42px;height:42px;border-radius:50%;background:rgba(229,62,62,0.2);border:1px solid rgba(229,62,62,0.4);display:flex;align-items:center;justify-content:center;color:#ff8080;font-size:17px}
+.emergency-text strong{display:block;font-size:14px;color:white;font-weight:600}
+.emergency-text span{font-size:12px;color:rgba(255,255,255,0.65)}
+.btn-call{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;border:none;background:var(--red-emergency);color:white;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.hero-right{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:24px}
+.hero-emblem-wrap{width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.10);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero-emblem{width:170px;height:170px;border-radius:50%;background:white;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,0.15)}
+.hero-emblem img{width:90%;height:90%;object-fit:contain}
+.hero-quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:340px}
+.quick-action{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 16px;border-radius:14px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(8px);cursor:pointer;text-decoration:none;transition:all 0.2s}
+.quick-action:hover{background:rgba(255,255,255,0.18);transform:translateY(-2px)}
+.quick-action i{font-size:22px;color:rgba(255,255,255,0.9)}
+.quick-action span{font-size:12px;font-weight:600;text-align:center;color:rgba(255,255,255,0.85)}
+.stats{background:white;border-bottom:1px solid #e5e7eb;padding:48px 40px}
+.stats-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.stat-item{text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:var(--green-main);line-height:1;margin-bottom:6px}
+.stat-label{font-size:14px;color:var(--text-light);font-weight:500}
+.services{background:var(--bg-section);padding:100px 40px}
+.section-header{text-align:center;margin-bottom:60px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,48px);font-weight:900;color:var(--text-dark);margin-bottom:16px}
+.section-sub{font-size:17px;color:var(--text-light);max-width:560px;margin:0 auto;line-height:1.6}
+.services-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.service-card{background:white;border-radius:18px;padding:32px 24px;box-shadow:var(--card-shadow);transition:all 0.3s;cursor:pointer;border:1.5px solid transparent}
+.service-card:hover{transform:translateY(-6px);border-color:var(--green-light);box-shadow:0 12px 40px rgba(30,107,69,0.15)}
+.service-icon-wrap{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px}
+.service-icon-wrap.blue{background:#eff6ff;color:#2563eb}
+.service-icon-wrap.green{background:#f0fdf4;color:#16a34a}
+.service-icon-wrap.purple{background:#faf5ff;color:#7c3aed}
+.service-icon-wrap.red{background:#fff5f5;color:#dc2626}
+.service-card h3{font-size:17px;font-weight:700;color:var(--text-dark);margin-bottom:10px}
+.service-card p{font-size:14px;line-height:1.6;color:var(--text-light)}
+.hospitals{padding:100px 40px;background:white}
+.hospitals-inner{max-width:1280px;margin:0 auto}
+.hospitals-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px}
+.hospitals-header h2{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,40px);font-weight:900;color:var(--text-dark)}
+.hospitals-header p{font-size:14px;color:var(--text-light);margin-top:6px}
+.view-all{display:flex;align-items:center;gap:6px;color:var(--green-main);font-size:14px;font-weight:600;text-decoration:none;transition:gap 0.2s}
+.hospitals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.hospital-card{border:1.5px solid #e5e7eb;border-radius:18px;padding:24px;transition:all 0.3s;cursor:pointer}
+.hospital-card:hover{border-color:var(--green-light);box-shadow:var(--card-shadow);transform:translateY(-4px)}
+.hospital-icon{width:48px;height:48px;border-radius:12px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;color:var(--green-main)}
+.hospital-card h3{font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;line-height:1.3}
+.hospital-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hospital-location{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text-light)}
+.hospital-rating{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--text-dark)}
+.star{color:var(--gold);font-size:13px}
+.hospital-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{padding:3px 10px;border-radius:100px;background:var(--green-pale);color:var(--green-dark);font-size:11px;font-weight:600}
+.tag-more{padding:3px 10px;border-radius:100px;background:#f3f4f6;color:var(--text-light);font-size:11px;font-weight:600}
+.btn-view-details{width:100%;padding:11px;border-radius:10px;border:none;background:var(--green-pale);color:var(--green-main);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.btn-view-details:hover{background:var(--green-main);color:white}
+.cta-section{background:linear-gradient(135deg,var(--green-dark),var(--green-mid));padding:100px 40px;text-align:center;position:relative;overflow:hidden}
+.cta-inner{position:relative;z-index:2;max-width:680px;margin:0 auto}
+.cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);color:white;font-weight:900;margin-bottom:18px}
+.cta-section p{font-size:17px;color:rgba(255,255,255,0.8);margin-bottom:40px;line-height:1.6}
+.btn-cta{display:inline-flex;align-items:center;gap:9px;padding:16px 40px;border-radius:12px;border:none;background:white;color:var(--green-dark);font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.btn-cta:hover{transform:translateY(-3px)}
+footer{background:#0f2419;color:rgba(255,255,255,0.65);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-brand{display:flex;align-items:center;gap:10px}
+.footer-logo{width:36px;height:36px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center}
+.footer-logo img{width:100%;height:100%;object-fit:contain}
+.footer-brand-text strong{display:block;color:white;font-size:15px;font-weight:600}
+.footer-brand-text span{font-size:12px}
+.footer-copy{font-size:13px}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:white}
+.fab-emergency{position:fixed;bottom:24px;left:24px;z-index:200;display:flex;align-items:center;gap:8px;padding:13px 20px;border-radius:50px;border:none;background:var(--red-emergency);color:white;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 24px rgba(229,62,62,0.45);transition:all 0.2s;text-decoration:none;animation:pulse-red 2.5s ease-in-out infinite;font-family:'DM Sans',sans-serif}
+@keyframes pulse-red{0%,100%{box-shadow:0 4px 24px rgba(229,62,62,0.45)}50%{box-shadow:0 4px 36px rgba(229,62,62,0.7)}}
+.fab-chat{position:fixed;bottom:24px;right:24px;z-index:200;width:52px;height:52px;border-radius:50%;border:none;background:var(--green-main);color:white;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(45,134,83,0.4);transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+@media(max-width:1024px){.hero-inner{grid-template-columns:1fr;text-align:center}.hero-cta{justify-content:center}.services-grid,.hospitals-grid{grid-template-columns:repeat(2,1fr)}.stats-inner{grid-template-columns:repeat(2,1fr);gap:32px}}
+@media(max-width:900px){.nav-links,.nav-actions{display:none}.hamburger{display:flex}nav{padding:0 20px}}
+@media(max-width:640px){.hero{padding:68px 20px 40px}.services,.hospitals{padding:60px 20px}.services-grid,.hospitals-grid{grid-template-columns:1fr}.hospitals-header{flex-direction:column;align-items:flex-start;gap:10px}.cta-section{padding:60px 20px}footer{flex-direction:column;align-items:flex-start;padding:24px 20px}}
