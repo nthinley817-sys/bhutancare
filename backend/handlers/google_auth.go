@@ -36,6 +36,8 @@ func GoogleLogin(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/auth/google/callback
 func GoogleCallback(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Google callback hit, code:", r.URL.Query().Get("code")[:10])
+	fmt.Println("Client ID:", os.Getenv("GOOGLE_CLIENT_ID")[:20])
 	code := r.URL.Query().Get("code")
 	if code == "" {
 		http.Redirect(w, r, "/pages/login.html?error=google_failed", http.StatusTemporaryRedirect)
