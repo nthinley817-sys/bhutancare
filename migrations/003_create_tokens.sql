@@ -1,0 +1,7 @@
+CREATE TABLE tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    value TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);

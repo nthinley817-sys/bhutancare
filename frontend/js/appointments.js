@@ -1,0 +1,1 @@
+// appointments page scripts
