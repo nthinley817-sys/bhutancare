@@ -123,7 +123,7 @@ async function loadSharedUserInfo() {
     if (!res.ok) return;
     const data = await res.json();
 
-    const initials = (data.first_name[0] + data.last_name[0]).toUpperCase();
+    const initials = (( data.first_name || data.FirstName || "U")[0] + ( data.last_name || data.LastName || "")[0]).toUpperCase();
     const fullName = data.first_name + ' ' + data.last_name;
 
     // Update sidebar user info

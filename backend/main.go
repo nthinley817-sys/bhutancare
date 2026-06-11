@@ -1,16 +1,28 @@
 package main
 
 import (
-    "log"
-    "net/http"
-
-    "bhutancare/routes"
+	"bhutancare/config"
+	"bhutancare/routes"
+	"log"
+	"net/http"
+	"os"
 )
 
 func main() {
-    mux := routes.Setup()
-    log.Println("backend listening on :8080")
-    if err := http.ListenAndServe(":8080", mux); err != nil {
-        log.Fatal(err)
-    }
+	// Connect to PostgreSQL
+	config.ConnectDB()
+
+	// Run migrations
+	config.RunMigrations()
+
+	// Setup routes
+	router := routes.Setup()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("🚀 BhutanCare API running → http://localhost:%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

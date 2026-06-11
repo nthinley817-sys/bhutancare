@@ -1,71 +1,93 @@
 package handlers
 
 import (
-	"encoding/base64"
+	"bhutancare/config"
+	"bhutancare/models"
 	"encoding/json"
 	"net/http"
+	"os"
 	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
-type authResponse struct {
-	Message string      `json:"message"`
-	Token   string      `json:"token,omitempty"`
-	User    interface{} `json:"user,omitempty"`
-}
-
-type loginRequest struct {
-	Identifier string `json:"identifier"`
-	Password   string `json:"password"`
-}
-
-func makeJWTLikeToken(payload interface{}) string {
-	header := `{"alg":"none","typ":"JWT"}`
-	pb, _ := json.Marshal(payload)
-	// use RawURLEncoding to produce base64url without padding
-	h := base64.RawURLEncoding.EncodeToString([]byte(header))
-	p := base64.RawURLEncoding.EncodeToString(pb)
-	// signature can be empty or dummy since frontend only decodes payload
-	s := "dummy"
-	return strings.Join([]string{h, p, s}, ".")
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	var inp models.RegisterInput
+	if err := json.NewDecoder(r.Body).Decode(&inp); err != nil {
+		jsonError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	if inp.FirstName == "" || inp.LastName == "" || inp.CID == "" || inp.Email == "" || inp.Password == "" {
+		jsonError(w, "All fields are required", http.StatusBadRequest)
+		return
+	}
+	hashed, err := bcrypt.GenerateFromPassword([]byte(inp.Password), bcrypt.DefaultCost)
+	if err != nil {
+		jsonError(w, "Server error", http.StatusInternalServerError)
+		return
+	}
+	var id int
+	err = config.DB.QueryRow(
+		`INSERT INTO users (first_name, last_name, cid, email, phone, password)
+		 VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+		inp.FirstName, inp.LastName, inp.CID,
+		strings.ToLower(inp.Email), inp.Phone, string(hashed),
+	).Scan(&id)
+	if err != nil {
+		if strings.Contains(err.Error(), "unique") || strings.Contains(err.Error(), "duplicate") {
+			jsonError(w, "Email or CID already registered", http.StatusConflict)
+			return
+		}
+		jsonError(w, "Failed to create account: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]interface{}{"id": id, "message": "Account created successfully"})
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	var inp models.LoginInput
+	if err := json.NewDecoder(r.Body).Decode(&inp); err != nil {
+		jsonError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	var id int
+	var firstName, lastName, hashedPass, email string
+	err := config.DB.QueryRow(
+		`SELECT id, first_name, last_name, email, password
+		 FROM users WHERE email = $1 OR cid = $1`,
+		strings.ToLower(inp.Identifier),
+	).Scan(&id, &firstName, &lastName, &email, &hashedPass)
+	if err != nil {
+		jsonError(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(hashedPass), []byte(inp.Password)); err != nil {
+		jsonError(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id": id,
+		"email":   email,
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+	})
+	tokenStr, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	if err != nil {
+		jsonError(w, "Failed to generate token", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
-	var req loginRequest
-	_ = json.NewDecoder(r.Body).Decode(&req)
-
-	// build a simple user object from the identifier
-	name := "User"
-	email := req.Identifier
-	if strings.Contains(req.Identifier, "@") {
-		parts := strings.Split(req.Identifier, "@")
-		name = strings.Title(strings.ReplaceAll(parts[0], ".", " "))
-	} else if req.Identifier != "" {
-		name = req.Identifier
-	}
-
-	// create a payload with exp so frontend's parseJwt/requireAuth accepts it
-	payload := map[string]interface{}{
-		"exp":   time.Now().Add(24 * time.Hour).Unix(),
-		"name":  name,
-		"email": email,
-	}
-
-	token := makeJWTLikeToken(payload)
-
-	user := map[string]interface{}{
-		"name":  name,
-		"email": email,
-	}
-
-	json.NewEncoder(w).Encode(authResponse{Message: "login successful", Token: token, User: user})
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"token": tokenStr,
+		"user":  map[string]interface{}{"id": id, "name": firstName + " " + lastName, "email": email},
+	})
 }
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+func jsonError(w http.ResponseWriter, msg string, code int) {
 	w.Header().Set("Content-Type", "application/json")
-	// accept registration payload but don't persist for now
-	var payload map[string]interface{}
-	_ = json.NewDecoder(r.Body).Decode(&payload)
-	json.NewEncoder(w).Encode(authResponse{Message: "register successful"})
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(map[string]string{"error": msg})
 }
