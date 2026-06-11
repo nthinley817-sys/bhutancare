@@ -18,7 +18,12 @@ import (
 var googleOAuthConfig = &oauth2.Config{
 	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 	ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-	RedirectURL:  "http://localhost:8080/api/auth/google/callback",
+	RedirectURL: func() string {
+		if r := os.Getenv("GOOGLE_REDIRECT_URL"); r != "" {
+			return r
+		}
+		return "http://localhost:8080/api/auth/google/callback"
+	}(),
 	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 	Endpoint:     google.Endpoint,
 }
