@@ -1,1 +1,1 @@
-// hospitals page scripts
+document.addEventListener('DOMContentLoaded', function () { requireAuth(); });

@@ -1,8 +1,136 @@
-window.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('[data-action]');
-    buttons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            alert('This page is a placeholder. Replace with your own UI.');
-        });
+// Active nav highlight
+function setActiveNav() {
+  const page = window.location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.remove('active');
+    if (el.getAttribute('href') === page) el.classList.add('active');
+  });
+}
+
+// Sidebar toggle mobile
+function initSidebar() {
+  const btn  = document.getElementById('hamburgerBtn');
+  const side = document.getElementById('sidebar');
+  if (!btn || !side) return;
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    side.classList.toggle('open');
+    btn.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (side.classList.contains('open') &&
+        !side.contains(e.target) && !btn.contains(e.target)) {
+      side.classList.remove('open');
+      btn.classList.remove('open');
+    }
+  });
+}
+
+// Toast notifications
+function showToast(msg, type = 'success', duration = 3000) {
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const icons = {
+    success: 'fa-circle-check', error: 'fa-circle-xmark',
+    warning: 'fa-triangle-exclamation', info: 'fa-circle-info'
+  };
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.success}"></i><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.3s ease both';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+// Modal helpers
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function initModals() {
+  document.querySelectorAll('[data-modal-open]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.modalOpen));
+  });
+  document.querySelectorAll('[data-modal-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.modalClose));
+  });
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('open');
     });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape')
+      document.querySelectorAll('.modal-overlay.open')
+              .forEach(m => m.classList.remove('open'));
+  });
+}
+
+// Auth helpers
+function getAuthToken()  { return localStorage.getItem('bhutancare_token'); }
+function clearAuthData() {
+  localStorage.removeItem('bhutancare_token');
+  localStorage.removeItem('bhutancare_user');
+}
+
+function logout(redirect = true) {
+  clearAuthData();
+  if (redirect) window.location.href = 'login.html';
+}
+
+function requireAuth() {
+  const token = getAuthToken();
+  if (!token) { window.location.href = 'login.html'; return false; }
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+    if (!payload.exp || payload.exp * 1000 < Date.now()) {
+      clearAuthData();
+      window.location.href = 'login.html';
+      return false;
+    }
+  } catch (e) {
+    clearAuthData();
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+async function apiCall(endpoint, options = {}) {
+  const token = getAuthToken();
+  if (!token) { logout(); return null; }
+  const res = await fetch('/api' + endpoint, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+      ...(options.headers || {})
+    }
+  });
+  if (res.status === 401 || res.status === 403) { logout(); return null; }
+  return res.json();
+}
+
+function initLogoutButton() {
+  const topnav = document.querySelector('.topnav-right');
+  if (!topnav || topnav.querySelector('.logout-btn')) return;
+  const btn = document.createElement('button');
+  btn.className = 'topnav-btn logout-btn';
+  btn.type = 'button';
+  btn.title = 'Logout';
+  btn.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i>';
+  btn.addEventListener('click', () => logout());
+  topnav.appendChild(btn);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setActiveNav();
+  initSidebar();
+  initModals();
+  initLogoutButton();
 });
