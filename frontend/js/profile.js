@@ -1,7 +1,40 @@
 document.addEventListener('DOMContentLoaded', function () {
   requireAuth();
   loadProfile();
+  initBMICalculator();
 });
+
+function initBMICalculator() {
+  const heightEl = document.querySelector('[data-field="height"]');
+  const weightEl = document.querySelector('[data-field="weight"]');
+  const bmiEl    = document.querySelector('[data-field="bmi"]');
+  const dobEl    = document.querySelector('[data-field="dob"]');
+
+  function calcBMI() {
+    const h = parseFloat(heightEl?.value);
+    const w = parseFloat(weightEl?.value);
+    if (!h || !w || h < 50 || h > 300) { if (bmiEl) bmiEl.value = ''; return; }
+    const bmi = (w / Math.pow(h / 100, 2)).toFixed(1);
+    let category = '';
+    if      (bmi < 18.5) category = 'Underweight';
+    else if (bmi < 25)   category = 'Normal';
+    else if (bmi < 30)   category = 'Overweight';
+    else                  category = 'Obese';
+    if (bmiEl) bmiEl.value = `${bmi} (${category})`;
+  }
+
+  function calcAge() {
+    const dob = dobEl?.value;
+    const ageEl = document.querySelector('[data-field="age"]');
+    if (!dob || !ageEl) return;
+    const age = Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000));
+    ageEl.value = age + ' years';
+  }
+
+  if (heightEl) heightEl.addEventListener('input', calcBMI);
+  if (weightEl) weightEl.addEventListener('input', calcBMI);
+  if (dobEl)    dobEl.addEventListener('change', calcAge);
+}
 
 async function loadProfile() {
   const token = getAuthToken();
@@ -13,15 +46,33 @@ async function loadProfile() {
   window.profileData = data;
 
   const initials = (data.first_name[0] + data.last_name[0]).toUpperCase();
-  const fullName = data.first_name + ' ' + data.last_name;
+  const fullName  = data.first_name + ' ' + data.last_name;
 
   document.querySelector('.profile-avatar-big').textContent = initials;
-  document.querySelector('.profile-name').textContent = fullName;
+  document.querySelector('.profile-name').textContent       = fullName;
+
+  // Calculate age
+  let ageStr = '';
+  if (data.dob) {
+    const age = Math.floor((new Date() - new Date(data.dob)) / (365.25 * 24 * 60 * 60 * 1000));
+    ageStr = `${age} years`;
+  }
+
+  // Calculate BMI
+  let bmiStr = '';
+  if (data.height_cm && data.weight_kg) {
+    const bmi = (data.weight_kg / Math.pow(data.height_cm / 100, 2)).toFixed(1);
+    let cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+    bmiStr = `${bmi} (${cat})`;
+  }
+
   document.querySelector('.profile-meta').innerHTML = `
     <span><i class="fa-solid fa-id-card"></i> CID: ${data.cid}</span>
     <span><i class="fa-solid fa-droplet"></i> Blood Group: ${data.blood_group || 'N/A'}</span>
-    <span><i class="fa-solid fa-calendar"></i> DOB: ${data.dob || 'N/A'}</span>
+    <span><i class="fa-solid fa-calendar"></i> DOB: ${data.dob ? data.dob.substring(0,10) : 'N/A'}</span>
     <span><i class="fa-solid fa-location-dot"></i> ${data.dzongkhag || 'Bhutan'}</span>
+    ${ageStr ? `<span><i class="fa-solid fa-user"></i> Age: ${ageStr}</span>` : ''}
+    ${bmiStr ? `<span><i class="fa-solid fa-weight-scale"></i> BMI: ${bmiStr}</span>` : ''}
   `;
 
   const sidebarName   = document.querySelector('.sidebar-user-name');
@@ -31,24 +82,21 @@ async function loadProfile() {
   if (sidebarAvatar) sidebarAvatar.textContent = initials;
   if (avatarBtn)     avatarBtn.textContent     = initials;
 
-  setField('first_name', data.first_name);
-  setField('last_name',  data.last_name);
-  setField('dob',        data.dob || '');
-  setField('gender',     data.gender || '');
-  setField('cid',        data.cid);
-  setField('nationality','Bhutanese');
-  setField('phone',      data.phone || '');
-  setField('email',      data.email);
-  setField('dzongkhag',  data.dzongkhag || '');
-  setField('village',    data.village || '');
-  setField('blood_group',data.blood_group || '');
-  setField('height',     data.height_cm || '');
-  setField('weight',     data.weight_kg || '');
-
-  if (data.height_cm && data.weight_kg) {
-    const bmi = (data.weight_kg / Math.pow(data.height_cm / 100, 2)).toFixed(1);
-    setField('bmi', bmi);
-  }
+  setField('first_name',  data.first_name);
+  setField('last_name',   data.last_name);
+  setField('dob',         data.dob ? data.dob.substring(0,10) : '');
+  setField('age',         ageStr);
+  setField('gender',      data.gender || '');
+  setField('cid',         data.cid);
+  setField('nationality', 'Bhutanese');
+  setField('phone',       data.phone || '');
+  setField('email',       data.email);
+  setField('dzongkhag',   data.dzongkhag || '');
+  setField('village',     data.village || '');
+  setField('blood_group', data.blood_group || '');
+  setField('height',      data.height_cm || '');
+  setField('weight',      data.weight_kg || '');
+  setField('bmi',         bmiStr);
 }
 
 function setField(name, value) {
@@ -58,20 +106,16 @@ function setField(name, value) {
 }
 
 function enableEdit(section) {
-  const card = document.querySelector(`.edit-section-${section}`);
+  const card   = document.querySelector(`.edit-section-${section}`);
   if (!card) return;
-
-  const locked = ['cid', 'nationality', 'email', 'bmi'];
-
+  const locked = ['cid', 'nationality', 'email', 'bmi', 'age'];
   card.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
     if (locked.includes(el.dataset.field)) return;
     el.removeAttribute('readonly');
     el.removeAttribute('disabled');
     el.style.borderColor = 'var(--green-main)';
     el.style.background  = '#f3faf6';
-    el.style.cursor      = 'text';
   });
-
   const editBtn = card.querySelector('.edit-btn');
   if (editBtn) {
     editBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save';
@@ -83,24 +127,22 @@ function enableEdit(section) {
 async function saveSection(section) {
   const card = document.querySelector(`.edit-section-${section}`);
   const get  = f => { const el = card.querySelector(`[data-field="${f}"]`); return el ? el.value : ''; };
-
   const payload = {
     phone:       get('phone'),
     blood_group: get('blood_group'),
     dzongkhag:   get('dzongkhag'),
     village:     get('village'),
     gender:      get('gender'),
-    height_cm:   parseInt(get('height'))  || 0,
-    weight_kg:   parseFloat(get('weight'))|| 0,
+    dob:         get('dob'),
+    height_cm:   parseInt(get('height'))   || 0,
+    weight_kg:   parseFloat(get('weight')) || 0,
   };
-
   const token = getAuthToken();
   const res = await fetch('/api/profile', {
-    method: 'PUT',
+    method:  'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-    body: JSON.stringify(payload)
+    body:    JSON.stringify(payload)
   });
-
   if (res.ok) {
     showToast('Profile updated successfully!', 'success');
     card.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
@@ -108,7 +150,6 @@ async function saveSection(section) {
       if (el.tagName === 'SELECT') el.setAttribute('disabled', true);
       el.style.borderColor = '';
       el.style.background  = '';
-      el.style.cursor      = '';
     });
     const editBtn = card.querySelector('.edit-btn');
     if (editBtn) {
