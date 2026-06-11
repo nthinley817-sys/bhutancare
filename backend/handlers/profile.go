@@ -42,7 +42,7 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 	err := config.DB.QueryRow(
 		`SELECT id, first_name, last_name, cid, email, phone,
 		        blood_group, COALESCE(dob::text, ''), dzongkhag, village,
-		        gender, height_cm, weight_kg, created_at
+		        gender, height_cm, weight_kg, COALESCE(profile_pic,''), created_at
 		 FROM users WHERE id = $1`, userID,
 	).Scan(&u.ID, &u.FirstName, &u.LastName, &u.CID, &u.Email, &u.Phone,
 		&u.BloodGroup, &u.DOB, &u.Dzongkhag, &u.Village,

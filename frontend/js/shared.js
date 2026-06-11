@@ -164,3 +164,36 @@ document.addEventListener('DOMContentLoaded', () => {
   initLogoutButton();
   loadSharedUserInfo(); // Load real user on every page
 });
+
+// Load profile pic from API and set on all sidebar avatars
+async function loadSidebarProfilePic() {
+  const token = getAuthToken();
+  if (!token || tokenExpired(token)) return;
+
+  // Check cache first
+  const cached = localStorage.getItem('bhutancare_profile_pic');
+  if (cached) {
+    setSidebarPic(cached);
+    return;
+  }
+
+  try {
+    const data = await apiCall('/profile');
+    if (data && data.profile_pic) {
+      localStorage.setItem('bhutancare_profile_pic', data.profile_pic);
+      setSidebarPic(data.profile_pic);
+    }
+  } catch(e) {}
+}
+
+function setSidebarPic(url) {
+  if (!url) return;
+  document.querySelectorAll('.sidebar-avatar').forEach(el => {
+    el.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent=this.parentElement.dataset.initials">`;
+  });
+  const topAvatar = document.querySelector('.avatar-btn');
+  if (topAvatar) {
+    topAvatar.dataset.initials = topAvatar.textContent;
+    topAvatar.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.textContent=this.dataset.initials">`;
+  }
+}

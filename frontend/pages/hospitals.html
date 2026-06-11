@@ -6,6 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="/css/shared.css">
+  <link rel="stylesheet" href="/css/animations.css">
   <link rel="stylesheet" href="/css/hospitals.css">
 </head>
 <body>
@@ -49,43 +50,47 @@
     </div>
   </aside>
   <main class="main-content">
-    <div class="page-header-row page-header">
-      <div><h1 class="page-header">Hospitals</h1><p>Find hospitals and book appointments across Bhutan</p></div>
-    </div>
-    <div class="card mb-24">
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <input type="text" class="form-control" placeholder="Search hospital or location..." style="flex:1;min-width:200px">
-        <select class="form-control" style="width:180px"><option>All Dzongkhags</option><option>Thimphu</option><option>Paro</option><option>Punakha</option><option>Gelephu</option><option>Mongar</option></select>
-        <button class="btn btn-primary"><i class="fa-solid fa-search"></i> Search</button>
+    <div style="background:linear-gradient(rgba(10,40,20,0.60),rgba(10,40,20,0.70)),url('/assets/images/JDWNRH_Hospital_Thimphu-800x445.webp') center/cover no-repeat;margin:-28px -28px 24px -28px;padding:60px 40px 48px;text-align:center">
+      <h1 style="font-family:var(--font-display);font-size:32px;color:white;margin-bottom:8px"><i class="fa-solid fa-hospital" style="margin-right:10px;color:var(--green-accent)"></i>Hospitals</h1>
+      <p style="color:rgba(255,255,255,0.8);font-size:15px;margin-bottom:24px">Find hospitals and book appointments across Bhutan</p>
+      <div style="display:flex;gap:12px;align-items:center;max-width:600px;margin:0 auto">
+        <div style="position:relative;flex:1">
+          <i class="fa-solid fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none"></i>
+          <input type="text" id="hospSearch" class="form-control" placeholder="Search by hospital name or location..." style="padding-left:40px;font-size:15px" oninput="filterHospitals()" onkeydown="if(event.key==='Enter') filterHospitals()">
+        </div>
+        <button class="btn btn-primary" onclick="filterHospitals()" style="white-space:nowrap"><i class="fa-solid fa-search"></i> Search</button>
+        <button class="btn" onclick="clearFilters()" style="white-space:nowrap;background:rgba(255,255,255,0.15);color:white;border:1.5px solid rgba(255,255,255,0.3)"><i class="fa-solid fa-xmark"></i> Clear</button>
       </div>
+      <p id="hospCount" style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:12px"></p>
     </div>
-    <div class="grid-3">
-      <div class="hosp-card">
+    <div id="noResults" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted)"><i class="fa-solid fa-hospital-slash" style="font-size:48px;margin-bottom:16px;opacity:0.3"></i><h3>No hospitals found</h3><p>Try a different search term or location</p></div>
+    <div id="hospGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px">
+      <div class="hosp-card" data-name="jigme dorji wangchuck national referral hospital" data-location="thimphu" data-type="national">
         <div class="hosp-card-top"><div class="hosp-icon-row"><div class="hosp-icon"><i class="fa-solid fa-hospital"></i></div><div><div class="hosp-name">Jigme Dorji Wangchuck National Referral Hospital</div><div class="hosp-type">National Referral Hospital</div></div></div><div class="flex-between"><div class="hosp-rating"><i class="fa-solid fa-star" style="color:var(--gold)"></i> 4.8</div><span class="badge badge-green"><i class="fa-solid fa-circle" style="font-size:8px"></i> Open</span></div></div>
         <div class="hosp-card-body"><div class="hosp-info-row"><i class="fa-solid fa-location-dot"></i> Thimphu, Bhutan</div><div class="hosp-info-row"><i class="fa-solid fa-phone"></i> +975 2 322496</div><div class="hosp-info-row"><i class="fa-solid fa-clock"></i> Mon–Sat 8AM–5PM · Emergency 24/7</div><div class="hosp-depts"><span class="tag">General OPD</span><span class="tag">Cardiology</span><span class="tag">Surgery</span><span class="tag">Emergency</span></div></div>
         <div class="hosp-foot"><a href="appointments.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-calendar-plus"></i> Book</a><a href="token.html" class="btn btn-secondary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-ticket"></i> Token</a></div>
       </div>
-      <div class="hosp-card">
+      <div class="hosp-card" data-name="mongar regional referral hospital" data-location="mongar" data-type="regional">
         <div class="hosp-card-top"><div class="hosp-icon-row"><div class="hosp-icon"><i class="fa-solid fa-hospital"></i></div><div><div class="hosp-name">Mongar Regional Referral Hospital</div><div class="hosp-type">Regional Referral Hospital</div></div></div><div class="flex-between"><div class="hosp-rating"><i class="fa-solid fa-star" style="color:var(--gold)"></i> 4.5</div><span class="badge badge-green"><i class="fa-solid fa-circle" style="font-size:8px"></i> Open</span></div></div>
         <div class="hosp-card-body"><div class="hosp-info-row"><i class="fa-solid fa-location-dot"></i> Mongar, Eastern Bhutan</div><div class="hosp-info-row"><i class="fa-solid fa-phone"></i> +975 4 641200</div><div class="hosp-info-row"><i class="fa-solid fa-clock"></i> Mon–Sat 8AM–5PM · Emergency 24/7</div><div class="hosp-depts"><span class="tag">General OPD</span><span class="tag">Pediatrics</span><span class="tag">Emergency</span></div></div>
         <div class="hosp-foot"><a href="appointments.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-calendar-plus"></i> Book</a><a href="token.html" class="btn btn-secondary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-ticket"></i> Token</a></div>
       </div>
-      <div class="hosp-card">
+      <div class="hosp-card" data-name="gelephu central regional referral hospital" data-location="gelephu" data-type="regional">
         <div class="hosp-card-top"><div class="hosp-icon-row"><div class="hosp-icon"><i class="fa-solid fa-hospital"></i></div><div><div class="hosp-name">Gelephu Central Regional Referral Hospital</div><div class="hosp-type">Regional Referral Hospital</div></div></div><div class="flex-between"><div class="hosp-rating"><i class="fa-solid fa-star" style="color:var(--gold)"></i> 4.6</div><span class="badge badge-green"><i class="fa-solid fa-circle" style="font-size:8px"></i> Open</span></div></div>
         <div class="hosp-card-body"><div class="hosp-info-row"><i class="fa-solid fa-location-dot"></i> Gelephu, Sarpang</div><div class="hosp-info-row"><i class="fa-solid fa-phone"></i> +975 6 251122</div><div class="hosp-info-row"><i class="fa-solid fa-clock"></i> Mon–Sat 8AM–5PM · Emergency 24/7</div><div class="hosp-depts"><span class="tag">Orthopedics</span><span class="tag">General OPD</span><span class="tag">Eye</span></div></div>
         <div class="hosp-foot"><a href="appointments.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-calendar-plus"></i> Book</a><a href="token.html" class="btn btn-secondary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-ticket"></i> Token</a></div>
       </div>
-      <div class="hosp-card">
+      <div class="hosp-card" data-name="paro district hospital" data-location="paro" data-type="district">
         <div class="hosp-card-top"><div class="hosp-icon-row"><div class="hosp-icon"><i class="fa-solid fa-hospital"></i></div><div><div class="hosp-name">Paro District Hospital</div><div class="hosp-type">District Hospital</div></div></div><div class="flex-between"><div class="hosp-rating"><i class="fa-solid fa-star" style="color:var(--gold)"></i> 4.5</div><span class="badge badge-green"><i class="fa-solid fa-circle" style="font-size:8px"></i> Open</span></div></div>
         <div class="hosp-card-body"><div class="hosp-info-row"><i class="fa-solid fa-location-dot"></i> Paro, Bhutan</div><div class="hosp-info-row"><i class="fa-solid fa-phone"></i> +975 8 271400</div><div class="hosp-info-row"><i class="fa-solid fa-clock"></i> Mon–Sat 8AM–5PM</div><div class="hosp-depts"><span class="tag">General OPD</span><span class="tag">Dental</span><span class="tag">Eye</span></div></div>
         <div class="hosp-foot"><a href="appointments.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-calendar-plus"></i> Book</a><a href="token.html" class="btn btn-secondary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-ticket"></i> Token</a></div>
       </div>
-      <div class="hosp-card">
+      <div class="hosp-card" data-name="punakha district hospital" data-location="punakha" data-type="district">
         <div class="hosp-card-top"><div class="hosp-icon-row"><div class="hosp-icon"><i class="fa-solid fa-hospital"></i></div><div><div class="hosp-name">Punakha District Hospital</div><div class="hosp-type">District Hospital</div></div></div><div class="flex-between"><div class="hosp-rating"><i class="fa-solid fa-star" style="color:var(--gold)"></i> 4.4</div><span class="badge badge-green"><i class="fa-solid fa-circle" style="font-size:8px"></i> Open</span></div></div>
         <div class="hosp-card-body"><div class="hosp-info-row"><i class="fa-solid fa-location-dot"></i> Punakha, Bhutan</div><div class="hosp-info-row"><i class="fa-solid fa-phone"></i> +975 2 584122</div><div class="hosp-info-row"><i class="fa-solid fa-clock"></i> Mon–Sat 8AM–5PM</div><div class="hosp-depts"><span class="tag">General OPD</span><span class="tag">Surgery</span><span class="tag">Pediatrics</span></div></div>
         <div class="hosp-foot"><a href="appointments.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-calendar-plus"></i> Book</a><a href="token.html" class="btn btn-secondary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-ticket"></i> Token</a></div>
       </div>
-      <div class="hosp-card">
+      <div class="hosp-card" data-name="wangduephodrang district hospital" data-location="wangdue" data-type="district">
         <div class="hosp-card-top"><div class="hosp-icon-row"><div class="hosp-icon"><i class="fa-solid fa-hospital"></i></div><div><div class="hosp-name">Wangduephodrang District Hospital</div><div class="hosp-type">District Hospital</div></div></div><div class="flex-between"><div class="hosp-rating"><i class="fa-solid fa-star" style="color:var(--gold)"></i> 4.3</div><span class="badge badge-amber">Limited Hours</span></div></div>
         <div class="hosp-card-body"><div class="hosp-info-row"><i class="fa-solid fa-location-dot"></i> Wangduephodrang, Bhutan</div><div class="hosp-info-row"><i class="fa-solid fa-phone"></i> +975 2 481100</div><div class="hosp-info-row"><i class="fa-solid fa-clock"></i> Mon–Fri 9AM–4PM</div><div class="hosp-depts"><span class="tag">General OPD</span><span class="tag">Maternal Health</span></div></div>
         <div class="hosp-foot"><a href="appointments.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-calendar-plus"></i> Book</a><a href="token.html" class="btn btn-secondary btn-sm" style="flex:1;justify-content:center"><i class="fa-solid fa-ticket"></i> Token</a></div>
@@ -96,5 +101,6 @@
 <div class="toast-container"></div>
 <script src="/js/shared.js"></script>
 <script src="/js/hospitals.js"></script>
+  <script src="/js/animations.js"></script>
 </body>
 </html>

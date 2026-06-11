@@ -20,6 +20,14 @@ func Setup() http.Handler {
 	// Public routes
 	r.HandleFunc("/api/auth/register", handlers.RegisterHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/auth/login",    handlers.LoginHandler).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/google",          handlers.GoogleLogin).Methods("GET")
+	r.HandleFunc("/api/auth/google/callback", handlers.GoogleCallback).Methods("GET")
+	r.HandleFunc("/api/auth/forgot-password", handlers.ForgotPassword).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/verify-otp",      handlers.VerifyOTP).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/reset-password",  handlers.ResetPassword).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/forgot-password", handlers.ForgotPassword).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/verify-otp",      handlers.VerifyOTP).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/auth/reset-password",  handlers.ResetPassword).Methods("POST", "OPTIONS")
 
 	// Protected routes
 	api := r.PathPrefix("/api").Subrouter()

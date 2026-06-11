@@ -1,3 +1,25 @@
+
+// Handle Google OAuth redirect
+(function() {
+  const hash = window.location.hash;
+  if (hash.includes('google_token=')) {
+    const params = new URLSearchParams(hash.slice(1));
+    const token  = params.get('google_token');
+    const name   = params.get('name');
+    const email  = params.get('email');
+    const pic    = params.get('pic');
+    if (token) {
+      localStorage.setItem('bhutancare_token', token);
+      localStorage.setItem('bhutancare_user', JSON.stringify({name, email}));
+      if (pic) localStorage.setItem('bhutancare_profile_pic', pic);
+      window.location.href = '/pages/dashboard.html';
+    }
+  }
+})();
+
+function loginWithGoogle() {
+  window.location.href = '/api/auth/google';
+}
 const cursor = document.getElementById('cursor');
 if (cursor) {
   document.addEventListener('mousemove', e => {
@@ -12,8 +34,7 @@ function switchTab(tab) {
   document.getElementById('panel-' + tab).classList.add('active');
   if (tab === 'signin')   document.getElementById('tab-signin').classList.add('active');
   if (tab === 'register') document.getElementById('tab-register').classList.add('active');
-  const s = document.getElementById('reset-success');
-  if (s) s.style.display = 'none';
+  switchStep(1);
 }
 
 function togglePass(id, btn) {
@@ -163,13 +184,89 @@ async function doRegister(btn) {
   }
 }
 
-function doReset(btn) {
+const API = 'http://localhost:8080';
+let resetEmail = '';
+let resetOTP = '';
+
+function switchStep(n) {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('forgot-step'+i);
+    if (el) el.style.display = i === n ? 'block' : 'none';
+  });
+}
+
+async function doReset(btn) {
   const email = document.getElementById('reset-email').value.trim();
   if (!email) { shakeCard(); return; }
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
   btn.disabled = true;
-  setTimeout(() => {
-    btn.style.display = 'none';
-    document.getElementById('reset-success').style.display = 'flex';
-  }, 1400);
+  try {
+    const res = await fetch(API + '/api/auth/forgot-password', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      resetEmail = email;
+      switchStep(2);
+    } else {
+      showToastLocal(data.error || 'Failed to send OTP', 'error');
+    }
+  } catch(e) {
+    showToastLocal('Cannot connect to server.', 'error');
+  }
+  btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send OTP';
+  btn.disabled = false;
+}
+
+async function doVerifyOTP(btn) {
+  const otp = document.getElementById('reset-otp').value.trim();
+  if (otp.length !== 6) { shakeCard(); return; }
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(API + '/api/auth/verify-otp', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email: resetEmail, otp})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      resetOTP = otp;
+      switchStep(3);
+    } else {
+      showToastLocal(data.error || 'Invalid OTP', 'error');
+    }
+  } catch(e) {
+    showToastLocal('Cannot connect to server.', 'error');
+  }
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> Verify OTP';
+  btn.disabled = false;
+}
+
+async function doResetPassword(btn) {
+  const password = document.getElementById('reset-newpass').value;
+  const confirm  = document.getElementById('reset-confirmpass').value;
+  if (password.length < 8) { showToastLocal('Password must be at least 8 characters', 'error'); return; }
+  if (password !== confirm) { showToastLocal('Passwords do not match', 'error'); return; }
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Resetting…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(API + '/api/auth/reset-password', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email: resetEmail, otp: resetOTP, password})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      switchStep(4);
+    } else {
+      showToastLocal(data.error || 'Failed to reset password', 'error');
+    }
+  } catch(e) {
+    showToastLocal('Cannot connect to server.', 'error');
+  }
+  btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Reset Password';
+  btn.disabled = false;
 }
