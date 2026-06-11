@@ -5,35 +5,39 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function initBMICalculator() {
-  const heightEl = document.querySelector('[data-field="height"]');
-  const weightEl = document.querySelector('[data-field="weight"]');
-  const bmiEl    = document.querySelector('[data-field="bmi"]');
-  const dobEl    = document.querySelector('[data-field="dob"]');
-
   function calcBMI() {
-    const h = parseFloat(heightEl?.value);
-    const w = parseFloat(weightEl?.value);
-    if (!h || !w || h < 50 || h > 300) { if (bmiEl) bmiEl.value = ''; return; }
+    const h = parseFloat(document.querySelector('[data-field="height"]')?.value);
+    const w = parseFloat(document.querySelector('[data-field="weight"]')?.value);
+    const bmiEl = document.querySelector('[data-field="bmi"]');
+    if (!bmiEl) return;
+    if (!h || !w || h < 50 || h > 300) { bmiEl.value = ''; return; }
     const bmi = (w / Math.pow(h / 100, 2)).toFixed(1);
-    let category = '';
-    if      (bmi < 18.5) category = 'Underweight';
-    else if (bmi < 25)   category = 'Normal';
-    else if (bmi < 30)   category = 'Overweight';
-    else                  category = 'Obese';
-    if (bmiEl) bmiEl.value = `${bmi} (${category})`;
+    const cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+    bmiEl.value = bmi + ' (' + cat + ')';
+    bmiEl.style.color = bmi < 18.5 || bmi >= 30 ? 'var(--red)' : bmi < 25 ? 'var(--green-main)' : 'var(--amber)';
+    bmiEl.style.fontWeight = '600';
   }
 
   function calcAge() {
-    const dob = dobEl?.value;
+    const dobEl = document.querySelector('[data-field="dob"]');
     const ageEl = document.querySelector('[data-field="age"]');
-    if (!dob || !ageEl) return;
-    const age = Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000));
+    if (!dobEl?.value || !ageEl) return;
+    const age = Math.floor((new Date() - new Date(dobEl.value)) / (365.25 * 24 * 60 * 60 * 1000));
     ageEl.value = age + ' years';
+    ageEl.style.color = 'var(--green-main)';
+    ageEl.style.fontWeight = '600';
   }
 
-  if (heightEl) heightEl.addEventListener('input', calcBMI);
-  if (weightEl) weightEl.addEventListener('input', calcBMI);
-  if (dobEl)    dobEl.addEventListener('change', calcAge);
+  // Use MutationObserver + event delegation to catch dynamically enabled fields
+  document.addEventListener('input', function(e) {
+    if (e.target.dataset.field === 'height' || e.target.dataset.field === 'weight') calcBMI();
+  });
+  document.addEventListener('change', function(e) {
+    if (e.target.dataset.field === 'dob') calcAge();
+  });
+
+  // Also run on page load if values exist
+  setTimeout(() => { calcBMI(); calcAge(); }, 500);
 }
 
 async function loadProfile() {
@@ -162,3 +166,18 @@ async function saveSection(section) {
     showToast('Failed to save. Try again.', 'error');
   }
 }
+
+// Override initBMICalculator to watch DOB from personal section too
+document.addEventListener('DOMContentLoaded', function() {
+  const dobEl = document.querySelector('[data-field="dob"]');
+  if (dobEl) {
+    dobEl.addEventListener('change', function() {
+      const ageEl = document.querySelector('[data-field="age"]');
+      if (!ageEl || !this.value) return;
+      const age = Math.floor((new Date() - new Date(this.value)) / (365.25 * 24 * 60 * 60 * 1000));
+      ageEl.value = age + ' years';
+      ageEl.style.color = 'var(--green-main)';
+      ageEl.style.fontWeight = '600';
+    });
+  }
+});
