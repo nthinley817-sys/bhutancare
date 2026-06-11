@@ -43,7 +43,17 @@ func Setup() http.Handler {
 	// Serve frontend
 	frontendPath := os.Getenv("FRONTEND_PATH")
 	if frontendPath == "" {
-		frontendPath = "../frontend"
+		// Try different paths for different environments
+		paths := []string{"../frontend", "./frontend", "/app/frontend"}
+		for _, p := range paths {
+			if _, err := os.Stat(p); err == nil {
+				frontendPath = p
+				break
+			}
+		}
+		if frontendPath == "" {
+			frontendPath = "../frontend"
+		}
 	}
 	frontend := http.FileServer(http.Dir(frontendPath))
 	r.PathPrefix("/").Handler(frontend)
