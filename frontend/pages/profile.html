@@ -50,10 +50,18 @@
   </aside>
   <main class="main-content">
     <div class="profile-hero">
-      <div class="profile-avatar-big">TN</div>
+      <div class="profile-pic-wrap" style="position:relative;flex-shrink:0">
+        <div class="profile-avatar-big" id="profileAvatar" style="cursor:pointer;overflow:hidden;position:relative">TN</div>
+        <img id="profilePicImg" src="" alt="Profile" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.3);cursor:pointer">
+        <label for="picInput" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--green-main);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid white;z-index:2" title="Change photo">
+          <i class="fa-solid fa-camera" style="font-size:11px;color:white"></i>
+        </label>
+        <input type="file" id="picInput" accept="image/*" style="display:none" onchange="uploadProfilePic(this)">
+      </div>
       <div style="flex:1">
         <div class="profile-name">Loading...</div>
         <div class="profile-meta"></div>
+        <div style="margin-top:8px;font-size:13px;color:rgba(255,255,255,0.6)">Click the camera icon to change your photo</div>
       </div>
     </div>
     <div class="grid-2" style="align-items:start">

@@ -24,6 +24,7 @@ type UserProfile struct {
 	Gender     string    `json:"gender"`
 	HeightCM   int       `json:"height_cm"`
 	WeightKG   float64   `json:"weight_kg"`
+	ProfilePic string    `json:"profile_pic"`
 	CreatedAt  time.Time `json:"created_at"`
 }
 
@@ -45,7 +46,7 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 		 FROM users WHERE id = $1`, userID,
 	).Scan(&u.ID, &u.FirstName, &u.LastName, &u.CID, &u.Email, &u.Phone,
 		&u.BloodGroup, &u.DOB, &u.Dzongkhag, &u.Village,
-		&u.Gender, &u.HeightCM, &u.WeightKG, &u.CreatedAt)
+		&u.Gender, &u.HeightCM, &u.WeightKG, &u.ProfilePic, &u.CreatedAt)
 	if err != nil {
 		jsonError(w, "Profile not found: "+err.Error(), http.StatusNotFound)
 		return

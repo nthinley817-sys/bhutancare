@@ -21,6 +21,7 @@ func Setup() http.Handler {
 	api.Use(middleware.RequireAuth)
 	api.HandleFunc("/profile",           handlers.ProfileHandler).Methods("GET", "PUT")
 	api.HandleFunc("/profile/password",  handlers.ChangePassword).Methods("PUT")
+	api.HandleFunc("/profile/picture",   handlers.UploadProfilePic).Methods("POST")
 	api.HandleFunc("/appointments",      handlers.AppointmentsHandler).Methods("GET", "POST")
 	api.HandleFunc("/tokens",            handlers.TokensHandler).Methods("GET", "POST")
 	api.HandleFunc("/prescriptions",     handlers.PrescriptionsHandler).Methods("GET", "POST")

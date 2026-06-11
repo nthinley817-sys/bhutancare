@@ -66,6 +66,7 @@ async function loadProfile() {
   }
 
   document.querySelector('.profile-avatar-big').textContent = initials;
+  showProfilePic(data.profile_pic);
   document.querySelector('.profile-name').textContent = fullName;
   document.querySelector('.profile-meta').innerHTML = `
     <span><i class="fa-solid fa-id-card"></i> CID: ${data.cid}</span>
@@ -271,5 +272,63 @@ function checkPwdMatch() {
   } else {
     label.textContent = '✗ Passwords do not match';
     label.style.color = 'var(--red)';
+  }
+}
+
+async function uploadProfilePic(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  // Validate size (max 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    showToast('Image must be under 2MB', 'error');
+    return;
+  }
+
+  showToast('Uploading...', 'info', 1500);
+
+  const formData = new FormData();
+  formData.append('profile_pic', file);
+
+  const token = getAuthToken();
+  const res = await fetch('/api/profile/picture', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token },
+    body: formData
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    showProfilePic(data.profile_pic);
+    showToast('Profile picture updated!', 'success');
+  } else {
+    showToast('Failed to upload. Try again.', 'error');
+  }
+}
+
+function showProfilePic(picData) {
+  const avatar = document.getElementById('profileAvatar');
+  const img    = document.getElementById('profilePicImg');
+  if (!picData || picData === '') {
+    if (avatar) avatar.style.display = 'flex';
+    if (img)    img.style.display    = 'none';
+    return;
+  }
+  if (avatar) avatar.style.display = 'none';
+  if (img) {
+    img.src           = picData;
+    img.style.display = 'block';
+  }
+  // Also update sidebar avatar
+  const sidebarAvatar = document.querySelector('.sidebar-avatar');
+  if (sidebarAvatar && picData) {
+    sidebarAvatar.innerHTML = `<img src="${picData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+  }
+  // Update topnav avatar
+  const avatarBtn = document.querySelector('.avatar-btn');
+  if (avatarBtn && picData) {
+    avatarBtn.innerHTML = `<img src="${picData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+    avatarBtn.style.padding = '0';
+    avatarBtn.style.overflow = 'hidden';
   }
 }
