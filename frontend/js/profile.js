@@ -41,7 +41,7 @@ async function loadProfile() {
     const token = getAuthToken();
     if (!token) { window.location.href = 'login.html'; return; }
 
-    const res = await fetch((window.API_BASE||'http://localhost:8080') + '/api/profile', {
+    const res = await fetch((window.API_BASE||(window.location.hostname==='localhost'?'http://localhost:8080':'')) + '/api/profile', {
       headers: { Authorization: 'Bearer ' + token }
     });
 
@@ -180,7 +180,7 @@ async function saveSection(section) {
   }
 
   const token = getAuthToken();
-  const res = await fetch((window.API_BASE||'http://localhost:8080') + '/api/profile', {
+  const res = await fetch((window.API_BASE||(window.location.hostname==='localhost'?'http://localhost:8080':'')) + '/api/profile', {
     method:  'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
     body:    JSON.stringify(payload)
@@ -223,7 +223,7 @@ async function changePassword() {
   }
 
   const token = getAuthToken();
-  const res = await fetch((window.API_BASE||'http://localhost:8080') + '/api/profile/password', {
+  const res = await fetch((window.API_BASE||(window.location.hostname==='localhost'?'http://localhost:8080':'')) + '/api/profile/password', {
     method:  'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
     body:    JSON.stringify({ current_password: curPass, new_password: newPass })
@@ -256,7 +256,7 @@ async function uploadProfilePic(input) {
   const formData = new FormData();
   formData.append('profile_pic', file);
   const token = getAuthToken();
-  const res = await fetch((window.API_BASE||'http://localhost:8080') + '/api/profile/picture', {
+  const res = await fetch((window.API_BASE||(window.location.hostname==='localhost'?'http://localhost:8080':'')) + '/api/profile/picture', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + token },
     body: formData

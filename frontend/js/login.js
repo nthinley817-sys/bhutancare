@@ -184,7 +184,7 @@ async function doRegister(btn) {
   }
 }
 
-const API = 'http://localhost:8080';
+const API = window.location.hostname === 'localhost' ? 'http://localhost:8080' : '';
 let resetEmail = '';
 let resetOTP = '';
 
