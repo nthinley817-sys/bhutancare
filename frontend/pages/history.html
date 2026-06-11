@@ -1,24 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name^} - Health App</title>
-    <link rel="stylesheet" href="shared.css">
-    <script src="shared.js" defer></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BhutanCare — Visit History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/history.css">
 </head>
 <body>
-    <header>
-        <h1>${name^}</h1>
-        <nav>
-            <a href="homepage.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <p>This is the ${name} page placeholder. Replace it with your real content.</p>
-        <button data-action="placeholder">Click me</button>
-    </main>
+<div class="app-shell">
+  <header class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+      <a class="topnav-logo" href="dashboard.html"><div class="topnav-logo-img"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="Logo"></div><span class="topnav-logo-name">BhutanCare</span></a>
+      <div class="topnav-divider"></div><span class="topnav-page-title">Visit History</span>
+    </div>
+    <div class="topnav-right">
+      <a class="topnav-btn emergency" href="tel:112"><i class="fa-solid fa-phone"></i> 112</a>
+      <button class="topnav-btn"><i class="fa-solid fa-bell"></i></button>
+      <button class="avatar-btn">KW</button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="nav-item" href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a class="nav-item" href="appointments.html"><i class="fa-solid fa-calendar-check"></i> Appointments <span class="badge">3</span></a>
+      <a class="nav-item" href="token.html"><i class="fa-solid fa-ticket"></i> Token System</a>
+      <a class="nav-item" href="prescriptions.html"><i class="fa-solid fa-pills"></i> Prescriptions</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Records</div>
+      <a class="nav-item active" href="history.html"><i class="fa-solid fa-clock-rotate-left"></i> Visit History</a>
+      <a class="nav-item" href="labresults.html"><i class="fa-solid fa-flask"></i> Lab Results</a>
+      <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Help</div>
+      <a class="nav-item" href="hospitals.html"><i class="fa-solid fa-hospital"></i> Hospitals</a>
+      <a class="nav-item" href="homepage.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">KW</div>
+      <div><div class="sidebar-user-name">Karma Wangchuk</div><div class="sidebar-user-role">Patient</div></div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header-row page-header">
+      <div><h1 class="page-header">Visit History</h1><p>Complete medical visit records since 2022</p></div>
+      <button class="btn btn-secondary" onclick="showToast('Downloading PDF...','info')"><i class="fa-solid fa-download"></i> Export PDF</button>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:28px">
+      <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-hospital-user"></i></div><div><div class="stat-num">12</div><div class="stat-label">Total Visits</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-user-doctor"></i></div><div><div class="stat-num">4</div><div class="stat-label">Doctors Seen</div></div></div>
+      <div class="stat-card"><div class="stat-icon amber"><i class="fa-solid fa-hospital"></i></div><div><div class="stat-num">3</div><div class="stat-label">Hospitals Visited</div></div></div>
+      <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-calendar"></i></div><div><div class="stat-num">4</div><div class="stat-label">Years of Records</div></div></div>
+    </div>
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:20px">2026</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="visit-card">
+              <div class="visit-header" onclick="toggleVisit(this)">
+                <div class="visit-header-left">
+                  <div class="visit-date-badge"><div class="visit-date-day">03</div><div class="visit-date-mon">Jun</div></div>
+                  <div><div class="visit-title">Cardiology Follow-up</div><div class="visit-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Dorji Namgyel · JDWNRH</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-green">Completed</span><i class="fa-solid fa-chevron-down chevron"></i></div>
+              </div>
+              <div class="visit-body">
+                <div class="visit-detail-grid">
+                  <div class="visit-detail-item"><div class="visit-detail-label">Diagnosis</div><div class="visit-detail-value">Hypertension Stage 1</div></div>
+                  <div class="visit-detail-item"><div class="visit-detail-label">Blood Pressure</div><div class="visit-detail-value">128/82 mmHg</div></div>
+                  <div class="visit-detail-item"><div class="visit-detail-label">Duration</div><div class="visit-detail-value">25 minutes</div></div>
+                  <div class="visit-detail-item"><div class="visit-detail-label">Follow-up</div><div class="visit-detail-value">Jun 15, 2026</div></div>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <a href="prescriptions.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-pills"></i> View Prescription</a>
+                  <a href="labresults.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-flask"></i> Lab Results</a>
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Downloaded','success')"><i class="fa-solid fa-download"></i> Download</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background:var(--blue)"></div>
+            <div class="visit-card">
+              <div class="visit-header" onclick="toggleVisit(this)">
+                <div class="visit-header-left">
+                  <div class="visit-date-badge" style="background:var(--blue-pale)"><div class="visit-date-day" style="color:var(--blue)">15</div><div class="visit-date-mon" style="color:#1d4ed8">May</div></div>
+                  <div><div class="visit-title">General OPD — Diabetes Check</div><div class="visit-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Tshering Pem · Paro Hospital</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-green">Completed</span><i class="fa-solid fa-chevron-down chevron"></i></div>
+              </div>
+              <div class="visit-body">
+                <div class="visit-detail-grid">
+                  <div class="visit-detail-item"><div class="visit-detail-label">Diagnosis</div><div class="visit-detail-value">Type 2 Diabetes — Controlled</div></div>
+                  <div class="visit-detail-item"><div class="visit-detail-label">HbA1c</div><div class="visit-detail-value">6.4% (Good)</div></div>
+                </div>
+                <div style="display:flex;gap:8px"><button class="btn btn-secondary btn-sm" onclick="showToast('Downloaded','success')"><i class="fa-solid fa-download"></i> Download</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Search Records</div></div>
+          <div class="form-group mb-16"><input type="text" class="form-control" placeholder="Search by doctor, hospital, diagnosis..."></div>
+          <div class="form-group mb-16"><label>Filter by Year</label><select class="form-control"><option>All Years</option><option selected>2026</option><option>2025</option><option>2024</option></select></div>
+          <button class="btn btn-primary mt-16" style="width:100%"><i class="fa-solid fa-search"></i> Search</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Chronic Conditions</div></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="flex-between"><span class="text-sm">Hypertension Stage 1</span><span class="badge badge-amber">Managed</span></div>
+            <div class="flex-between"><span class="text-sm">Type 2 Diabetes</span><span class="badge badge-green">Controlled</span></div>
+            <div class="flex-between"><span class="text-sm">Hypercholesterolaemia</span><span class="badge badge-amber">On Treatment</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Allergies &amp; Notes</div></div>
+          <div class="alert alert-error" style="margin-bottom:8px"><i class="fa-solid fa-circle-xmark"></i><span><strong>Penicillin</strong> — Known allergy (rash)</span></div>
+          <div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation"></i><span><strong>NSAIDs</strong> — Use with caution</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-container"></div>
+<script src="../js/shared.js"></script>
+<script src="../js/history.js"></script>
 </body>
 </html>

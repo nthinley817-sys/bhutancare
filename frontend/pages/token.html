@@ -1,24 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name^} - Health App</title>
-    <link rel="stylesheet" href="shared.css">
-    <script src="shared.js" defer></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BhutanCare — Token System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/token.css">
 </head>
 <body>
-    <header>
-        <h1>${name^}</h1>
-        <nav>
-            <a href="homepage.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <p>This is the ${name} page placeholder. Replace it with your real content.</p>
-        <button data-action="placeholder">Click me</button>
-    </main>
+<div class="app-shell">
+  <header class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+      <a class="topnav-logo" href="dashboard.html"><div class="topnav-logo-img"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="Logo"></div><span class="topnav-logo-name">BhutanCare</span></a>
+      <div class="topnav-divider"></div><span class="topnav-page-title">Token System</span>
+    </div>
+    <div class="topnav-right">
+      <a class="topnav-btn emergency" href="tel:112"><i class="fa-solid fa-phone"></i> 112</a>
+      <button class="topnav-btn"><i class="fa-solid fa-bell"></i></button>
+      <button class="avatar-btn">KW</button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="nav-item" href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a class="nav-item" href="appointments.html"><i class="fa-solid fa-calendar-check"></i> Appointments <span class="badge">3</span></a>
+      <a class="nav-item active" href="token.html"><i class="fa-solid fa-ticket"></i> Token System</a>
+      <a class="nav-item" href="prescriptions.html"><i class="fa-solid fa-pills"></i> Prescriptions</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Records</div>
+      <a class="nav-item" href="history.html"><i class="fa-solid fa-clock-rotate-left"></i> Visit History</a>
+      <a class="nav-item" href="labresults.html"><i class="fa-solid fa-flask"></i> Lab Results</a>
+      <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Help</div>
+      <a class="nav-item" href="hospitals.html"><i class="fa-solid fa-hospital"></i> Hospitals</a>
+      <a class="nav-item" href="homepage.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">KW</div>
+      <div><div class="sidebar-user-name">Karma Wangchuk</div><div class="sidebar-user-role">Patient</div></div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header-row page-header">
+      <div><h1 class="page-header">Token System</h1><p>Get your OPD token and track the live queue</p></div>
+      <button class="btn btn-primary" data-modal-open="getTokenModal"><i class="fa-solid fa-ticket"></i> Get New Token</button>
+    </div>
+    <div class="token-hero">
+      <div class="token-hero-left">
+        <h2>Your Active Token</h2>
+        <p>JDWNRH — General OPD · Today, June 11, 2026</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" style="background:white;color:var(--blue);font-size:13px;padding:9px 16px" onclick="showToast('Token status refreshed','info')"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          <button class="btn" style="background:rgba(255,255,255,0.15);color:white;border:1.5px solid rgba(255,255,255,0.3);font-size:13px;padding:9px 16px" onclick="showToast('SMS reminder sent','success')"><i class="fa-solid fa-bell"></i> Notify Me</button>
+        </div>
+      </div>
+      <div class="big-token">
+        <div class="big-token-label">Token Number</div>
+        <div class="big-token-num" id="myToken">A-47</div>
+        <div class="big-token-dept">General OPD</div>
+        <div class="big-token-eta"><i class="fa-solid fa-clock"></i> <span id="etaText">Est. 25 min wait</span></div>
+      </div>
+    </div>
+    <div class="counter-row">
+      <div class="counter-card"><div class="counter-card-num counter-now" id="nowServing">A-42</div><div class="counter-card-label"><i class="fa-solid fa-person-walking-arrow-right"></i> Now Serving</div></div>
+      <div class="counter-card"><div class="counter-card-num counter-wait" id="waitCount">5</div><div class="counter-card-label"><i class="fa-solid fa-hourglass-half"></i> Ahead of You</div></div>
+      <div class="counter-card"><div class="counter-card-num counter-done">38</div><div class="counter-card-label"><i class="fa-solid fa-circle-check"></i> Served Today</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Live Queue — General OPD</div><div class="card-sub">JDWNRH · Updated just now</div></div><span class="badge badge-green"><i class="fa-solid fa-circle" style="font-size:8px"></i> Live</span></div>
+        <div class="queue-list">
+          <div class="queue-item"><div class="queue-position q-current"><i class="fa-solid fa-person"></i></div><div><div class="queue-token-num">A-42</div><div class="queue-dept">In consultation</div></div><div class="queue-eta"><strong>Now</strong>Dr. Dorji</div></div>
+          <div class="queue-item"><div class="queue-position q-next">2</div><div><div class="queue-token-num">A-43</div><div class="queue-dept">General OPD</div></div><div class="queue-eta"><strong>~5 min</strong>next</div></div>
+          <div class="queue-item"><div class="queue-position q-waiting">3</div><div><div class="queue-token-num">A-44</div><div class="queue-dept">General OPD</div></div><div class="queue-eta"><strong>~10 min</strong>waiting</div></div>
+          <div class="queue-item"><div class="queue-position q-waiting">4</div><div><div class="queue-token-num">A-45</div><div class="queue-dept">General OPD</div></div><div class="queue-eta"><strong>~15 min</strong>waiting</div></div>
+          <div class="queue-item"><div class="queue-position q-waiting">5</div><div><div class="queue-token-num">A-46</div><div class="queue-dept">General OPD</div></div><div class="queue-eta"><strong>~20 min</strong>waiting</div></div>
+          <div class="queue-item" style="background:rgba(78,202,127,0.08);border-radius:var(--radius-sm);padding:12px 8px;border:1.5px solid var(--green-pale)">
+            <div class="queue-position" style="background:var(--green-pale);color:var(--green-main)"><i class="fa-solid fa-star"></i></div>
+            <div><div class="queue-token-num" style="color:var(--green-main)">A-47</div><div class="queue-dept">You are here</div></div>
+            <div class="queue-eta"><strong style="color:var(--green-main)">~25 min</strong>your turn</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">All Departments</div><div class="card-sub">Current wait times</div></div></div>
+        <div class="dept-grid">
+          <div class="dept-card selected" onclick="selectDept(this)"><i class="fa-solid fa-stethoscope"></i><div class="dept-card-name">General OPD</div><div class="dept-card-wait">~25 min</div><div class="dept-card-count">12 in queue</div></div>
+          <div class="dept-card" onclick="selectDept(this)"><i class="fa-solid fa-heart-pulse"></i><div class="dept-card-name">Cardiology</div><div class="dept-card-wait">~40 min</div><div class="dept-card-count">8 in queue</div></div>
+          <div class="dept-card" onclick="selectDept(this)"><i class="fa-solid fa-bone"></i><div class="dept-card-name">Orthopedics</div><div class="dept-card-wait">~15 min</div><div class="dept-card-count">3 in queue</div></div>
+          <div class="dept-card" onclick="selectDept(this)"><i class="fa-solid fa-baby"></i><div class="dept-card-name">Pediatrics</div><div class="dept-card-wait">~35 min</div><div class="dept-card-count">7 in queue</div></div>
+          <div class="dept-card" onclick="selectDept(this)"><i class="fa-solid fa-eye"></i><div class="dept-card-name">Ophthalmology</div><div class="dept-card-wait">~50 min</div><div class="dept-card-count">11 in queue</div></div>
+          <div class="dept-card" onclick="selectDept(this)"><i class="fa-solid fa-tooth"></i><div class="dept-card-name">Dental</div><div class="dept-card-wait">~10 min</div><div class="dept-card-count">2 in queue</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-overlay" id="getTokenModal">
+      <div class="modal">
+        <div class="modal-header"><div class="modal-title"><i class="fa-solid fa-ticket" style="color:var(--blue);margin-right:8px"></i>Get OPD Token</div><button class="modal-close" data-modal-close="getTokenModal">&times;</button></div>
+        <div class="form-grid" style="gap:14px">
+          <div class="form-group"><label>Hospital</label><select class="form-control"><option>JDWNRH — Thimphu</option><option>Paro District Hospital</option><option>Punakha District Hospital</option></select></div>
+          <div class="form-group"><label>Department</label><select class="form-control"><option>General OPD</option><option>Cardiology</option><option>Orthopedics</option><option>Pediatrics</option><option>Dental</option></select></div>
+        </div>
+        <div class="alert alert-info mt-16"><i class="fa-solid fa-circle-info"></i><span>Current wait ~25 minutes. 12 patients ahead.</span></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-modal-close="getTokenModal">Cancel</button>
+          <button class="btn btn-primary" onclick="issueToken()"><i class="fa-solid fa-ticket"></i> Issue Token</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-container"></div>
+<script src="../js/shared.js"></script>
+<script src="../js/token.js"></script>
 </body>
 </html>

@@ -1,24 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name^} - Health App</title>
-    <link rel="stylesheet" href="shared.css">
-    <script src="shared.js" defer></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BhutanCare — Prescriptions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/prescriptions.css">
 </head>
 <body>
-    <header>
-        <h1>${name^}</h1>
-        <nav>
-            <a href="homepage.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <p>This is the ${name} page placeholder. Replace it with your real content.</p>
-        <button data-action="placeholder">Click me</button>
-    </main>
+<div class="app-shell">
+  <header class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+      <a class="topnav-logo" href="dashboard.html"><div class="topnav-logo-img"><img src="../assets/images/cropped-moh_logo_20180514.png" alt="Logo"></div><span class="topnav-logo-name">BhutanCare</span></a>
+      <div class="topnav-divider"></div><span class="topnav-page-title">Prescriptions</span>
+    </div>
+    <div class="topnav-right">
+      <a class="topnav-btn emergency" href="tel:112"><i class="fa-solid fa-phone"></i> 112</a>
+      <button class="topnav-btn"><i class="fa-solid fa-bell"></i></button>
+      <button class="avatar-btn">KW</button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="nav-item" href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a class="nav-item" href="appointments.html"><i class="fa-solid fa-calendar-check"></i> Appointments <span class="badge">3</span></a>
+      <a class="nav-item" href="token.html"><i class="fa-solid fa-ticket"></i> Token System</a>
+      <a class="nav-item active" href="prescriptions.html"><i class="fa-solid fa-pills"></i> Prescriptions</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Records</div>
+      <a class="nav-item" href="history.html"><i class="fa-solid fa-clock-rotate-left"></i> Visit History</a>
+      <a class="nav-item" href="labresults.html"><i class="fa-solid fa-flask"></i> Lab Results</a>
+      <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Help</div>
+      <a class="nav-item" href="hospitals.html"><i class="fa-solid fa-hospital"></i> Hospitals</a>
+      <a class="nav-item" href="homepage.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">KW</div>
+      <div><div class="sidebar-user-name">Karma Wangchuk</div><div class="sidebar-user-role">Patient</div></div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header-row page-header">
+      <div><h1 class="page-header">Prescriptions</h1><p>Your current and past medication prescriptions</p></div>
+      <button class="btn btn-secondary" onclick="showToast('Download coming soon','info')"><i class="fa-solid fa-download"></i> Download All</button>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+      <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-pills"></i></div><div><div class="stat-num">5</div><div class="stat-label">Active Medications</div></div></div>
+      <div class="stat-card"><div class="stat-icon amber"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div class="stat-num">1</div><div class="stat-label">Refill Due Soon</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-file-prescription"></i></div><div><div class="stat-num">3</div><div class="stat-label">Active Prescriptions</div></div></div>
+      <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-clock-rotate-left"></i></div><div><div class="stat-num">14</div><div class="stat-label">Past Prescriptions</div></div></div>
+    </div>
+    <div class="alert alert-warning mb-16"><i class="fa-solid fa-triangle-exclamation"></i><span><strong>Metformin 500mg</strong> refill is due in 3 days.</span></div>
+    <div class="rx-card">
+      <div class="rx-header"><div class="rx-header-left"><div class="rx-icon"><i class="fa-solid fa-file-prescription"></i></div><div><div class="rx-title">Rx #BC-2026-0412 — Cardiac Management</div><div class="rx-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Dorji Namgyel · JDWNRH · Jun 3, 2026</div></div></div><div style="display:flex;gap:8px;align-items:center"><span class="badge badge-green">Active</span><button class="btn btn-secondary btn-sm" onclick="showToast('Downloaded','success')"><i class="fa-solid fa-download"></i></button></div></div>
+      <div class="rx-body">
+        <div class="med-row"><div class="med-pill" style="background:var(--blue-pale);color:var(--blue)"><i class="fa-solid fa-capsules"></i></div><div class="med-detail"><div class="med-detail-name">Amlodipine 5mg</div><div class="med-detail-info">1 tablet daily · After breakfast</div></div><div class="med-duration"><div class="days">27</div><div class="left">days left</div><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></div></div>
+        <div class="med-row"><div class="med-pill" style="background:var(--amber-pale);color:var(--amber)"><i class="fa-solid fa-tablets"></i></div><div class="med-detail"><div class="med-detail-name">Atorvastatin 10mg</div><div class="med-detail-info">1 tablet at bedtime</div></div><div class="med-duration"><div class="days">27</div><div class="left">days left</div><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></div></div>
+      </div>
+      <div class="rx-footer"><div class="rx-footer-meta"><span><i class="fa-solid fa-calendar"></i> Valid until Jul 3, 2026</span><span><i class="fa-solid fa-rotate"></i> 1 refill remaining</span></div><button class="btn btn-primary btn-sm" onclick="showToast('Refill request sent!','success')"><i class="fa-solid fa-rotate"></i> Request Refill</button></div>
+    </div>
+    <div class="rx-card">
+      <div class="rx-header"><div class="rx-header-left"><div class="rx-icon"><i class="fa-solid fa-file-prescription"></i></div><div><div class="rx-title">Rx #BC-2026-0389 — Diabetes Management</div><div class="rx-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Tshering Pem · Paro Hospital · May 15, 2026</div></div></div><div style="display:flex;gap:8px;align-items:center"><span class="badge badge-amber">Refill Due</span><button class="btn btn-secondary btn-sm" onclick="showToast('Downloaded','success')"><i class="fa-solid fa-download"></i></button></div></div>
+      <div class="rx-body">
+        <div class="med-row"><div class="med-pill" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-pills"></i></div><div class="med-detail"><div class="med-detail-name">Metformin 500mg</div><div class="med-detail-info">1 tablet twice daily · With meals</div></div><div class="med-duration"><div class="days" style="color:var(--red)">3</div><div class="left">days left</div><div class="progress-bar"><div class="progress-fill low" style="width:10%"></div></div></div></div>
+      </div>
+      <div class="rx-footer"><div class="rx-footer-meta"><span><i class="fa-solid fa-calendar"></i> Valid until Jun 15, 2026</span><span><i class="fa-solid fa-rotate"></i> 0 refills remaining</span></div><button class="btn btn-danger btn-sm" onclick="showToast('Renewal request sent','warning')"><i class="fa-solid fa-phone"></i> Request Renewal</button></div>
+    </div>
+  </main>
+</div>
+<div class="toast-container"></div>
+<script src="../js/shared.js"></script>
+<script src="../js/prescriptions.js"></script>
 </body>
 </html>
