@@ -16,6 +16,7 @@ func ConnectDB() {
 
 	// Use DATABASE_URL if available (Render provides this)
 	if dbURL := os.Getenv("DATABASE_URL"); dbURL != "" {
+		log.Println("✅ Using DATABASE_URL:", dbURL[:20], "...")
 		dsn = dbURL
 	} else {
 		dsn = fmt.Sprintf(
