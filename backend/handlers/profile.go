@@ -5,6 +5,7 @@ import (
 	"bhutancare/middleware"
 	"encoding/json"
 	"net/http"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -54,26 +55,61 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 
 func updateProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
-	var inp struct {
-		Phone      string  `json:"phone"`
-		BloodGroup string  `json:"blood_group"`
-		Dzongkhag  string  `json:"dzongkhag"`
-		Village    string  `json:"village"`
-		Gender     string  `json:"gender"`
-		DOB        string  `json:"dob"`
-		HeightCM   int     `json:"height_cm"`
-		WeightKG   float64 `json:"weight_kg"`
+
+	// Decode all possible fields
+	var inp map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&inp); err != nil {
+		jsonError(w, "Invalid body", http.StatusBadRequest)
+		return
 	}
-	json.NewDecoder(r.Body).Decode(&inp)
+
+	// Fetch current values from DB
+	var cur UserProfile
+	config.DB.QueryRow(
+		`SELECT phone, blood_group, COALESCE(dob::text,''),
+		        dzongkhag, village, gender, height_cm, weight_kg
+		 FROM users WHERE id=$1`, userID,
+	).Scan(&cur.Phone, &cur.BloodGroup, &cur.DOB,
+		&cur.Dzongkhag, &cur.Village, &cur.Gender,
+		&cur.HeightCM, &cur.WeightKG)
+
+	// Only overwrite fields that were actually sent
+	getString := func(key, fallback string) string {
+		if v, ok := inp[key]; ok && v != nil {
+			if s, ok := v.(string); ok { return s }
+		}
+		return fallback
+	}
+	getInt := func(key string, fallback int) int {
+		if v, ok := inp[key]; ok && v != nil {
+			if f, ok := v.(float64); ok { return int(f) }
+		}
+		return fallback
+	}
+	getFloat := func(key string, fallback float64) float64 {
+		if v, ok := inp[key]; ok && v != nil {
+			if f, ok := v.(float64); ok { return f }
+		}
+		return fallback
+	}
+
+	phone      := getString("phone",       cur.Phone)
+	bloodGroup := getString("blood_group", cur.BloodGroup)
+	dzongkhag  := getString("dzongkhag",   cur.Dzongkhag)
+	village    := getString("village",     cur.Village)
+	gender     := getString("gender",      cur.Gender)
+	dob        := getString("dob",         cur.DOB)
+	heightCM   := getInt("height_cm",      cur.HeightCM)
+	weightKG   := getFloat("weight_kg",    cur.WeightKG)
 
 	_, err := config.DB.Exec(
 		`UPDATE users SET
 			phone=$1, blood_group=$2, dzongkhag=$3, village=$4,
-			gender=$5, height_cm=$6, weight_kg=$7,
-			dob=NULLIF($8,'')::date
+			gender=$5, dob=NULLIF($6,'')::date,
+			height_cm=$7, weight_kg=$8
 		 WHERE id=$9`,
-		inp.Phone, inp.BloodGroup, inp.Dzongkhag, inp.Village,
-		inp.Gender, inp.HeightCM, inp.WeightKG, inp.DOB, userID)
+		phone, bloodGroup, dzongkhag, village,
+		gender, dob, heightCM, weightKG, userID)
 
 	if err != nil {
 		jsonError(w, "Failed to update: "+err.Error(), http.StatusInternalServerError)
@@ -81,4 +117,52 @@ func updateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"message": "Profile updated"})
+}
+
+func ChangePassword(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.GetUserID(r)
+
+	var inp struct {
+		CurrentPassword string `json:"current_password"`
+		NewPassword     string `json:"new_password"`
+	}
+	json.NewDecoder(r.Body).Decode(&inp)
+
+	if inp.CurrentPassword == "" || inp.NewPassword == "" {
+		jsonError(w, "All fields required", http.StatusBadRequest)
+		return
+	}
+	if len(inp.NewPassword) < 8 {
+		jsonError(w, "Password must be at least 8 characters", http.StatusBadRequest)
+		return
+	}
+
+	// Get current hashed password
+	var hashedPass string
+	err := config.DB.QueryRow(
+		`SELECT password FROM users WHERE id=$1`, userID,
+	).Scan(&hashedPass)
+	if err != nil {
+		jsonError(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	// Verify current password
+	if err := bcrypt.CompareHashAndPassword([]byte(hashedPass), []byte(inp.CurrentPassword)); err != nil {
+		jsonError(w, "Current password is incorrect", http.StatusUnauthorized)
+		return
+	}
+
+	// Hash new password
+	newHashed, err := bcrypt.GenerateFromPassword([]byte(inp.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		jsonError(w, "Server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Update password
+	config.DB.Exec(`UPDATE users SET password=$1 WHERE id=$2`, string(newHashed), userID)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Password updated successfully"})
 }

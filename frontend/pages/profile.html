@@ -105,11 +105,36 @@
         <div class="card">
           <div class="card-header"><div class="card-title"><i class="fa-solid fa-lock" style="color:var(--purple);margin-right:8px"></i>Change Password</div></div>
           <div class="form-grid">
-            <div class="form-group"><label>Current Password</label><input class="form-control" type="password" placeholder="••••••••"></div>
-            <div class="form-group"><label>New Password</label><input class="form-control" type="password" placeholder="Min 8 characters"></div>
-            <div class="form-group"><label>Confirm New Password</label><input class="form-control" type="password" placeholder="Re-enter new password"></div>
+            <div class="form-group">
+              <label>Current Password</label>
+              <div class="input-wrap" style="position:relative;display:flex;align-items:center">
+                <input class="form-control" type="password" id="cur-pass" placeholder="Enter current password" style="padding-right:42px">
+                <button type="button" onclick="togglePwd('cur-pass',this)" style="position:absolute;right:12px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;padding:4px"><i class="fa-solid fa-eye"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <div class="input-wrap" style="position:relative;display:flex;align-items:center">
+                <input class="form-control" type="password" id="new-pass" placeholder="Min 8 characters" oninput="checkPwdStrength(this.value)" style="padding-right:42px">
+                <button type="button" onclick="togglePwd('new-pass',this)" style="position:absolute;right:12px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;padding:4px"><i class="fa-solid fa-eye"></i></button>
+              </div>
+              <div style="display:flex;gap:5px;margin-top:8px">
+                <div id="ps1" style="flex:1;height:3px;border-radius:3px;background:var(--border);transition:background 0.3s"></div>
+                <div id="ps2" style="flex:1;height:3px;border-radius:3px;background:var(--border);transition:background 0.3s"></div>
+                <div id="ps3" style="flex:1;height:3px;border-radius:3px;background:var(--border);transition:background 0.3s"></div>
+              </div>
+              <div id="pwd-strength-label" style="font-size:12px;font-weight:600;margin-top:4px"></div>
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <div class="input-wrap" style="position:relative;display:flex;align-items:center">
+                <input class="form-control" type="password" id="con-pass" placeholder="Re-enter new password" oninput="checkPwdMatch()" style="padding-right:42px">
+                <button type="button" onclick="togglePwd('con-pass',this)" style="position:absolute;right:12px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;padding:4px"><i class="fa-solid fa-eye"></i></button>
+              </div>
+              <div id="pwd-match-label" style="font-size:12px;font-weight:600;margin-top:4px"></div>
+            </div>
           </div>
-          <button class="btn btn-primary mt-16" onclick="showToast('Password updated!','success')"><i class="fa-solid fa-floppy-disk"></i> Update Password</button>
+          <button class="btn btn-primary mt-16" onclick="changePassword()" style="width:100%"><i class="fa-solid fa-key"></i> Update Password</button>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:16px">

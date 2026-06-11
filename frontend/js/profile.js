@@ -1,43 +1,41 @@
 document.addEventListener('DOMContentLoaded', function () {
   requireAuth();
   loadProfile();
-  initBMICalculator();
+  initAutoCalc();
 });
 
-function initBMICalculator() {
-  function calcBMI() {
-    const h = parseFloat(document.querySelector('[data-field="height"]')?.value);
-    const w = parseFloat(document.querySelector('[data-field="weight"]')?.value);
-    const bmiEl = document.querySelector('[data-field="bmi"]');
-    if (!bmiEl) return;
-    if (!h || !w || h < 50 || h > 300) { bmiEl.value = ''; return; }
-    const bmi = (w / Math.pow(h / 100, 2)).toFixed(1);
-    const cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
-    bmiEl.value = bmi + ' (' + cat + ')';
-    bmiEl.style.color = bmi < 18.5 || bmi >= 30 ? 'var(--red)' : bmi < 25 ? 'var(--green-main)' : 'var(--amber)';
-    bmiEl.style.fontWeight = '600';
-  }
-
-  function calcAge() {
-    const dobEl = document.querySelector('[data-field="dob"]');
-    const ageEl = document.querySelector('[data-field="age"]');
-    if (!dobEl?.value || !ageEl) return;
-    const age = Math.floor((new Date() - new Date(dobEl.value)) / (365.25 * 24 * 60 * 60 * 1000));
-    ageEl.value = age + ' years';
-    ageEl.style.color = 'var(--green-main)';
-    ageEl.style.fontWeight = '600';
-  }
-
-  // Use MutationObserver + event delegation to catch dynamically enabled fields
+function initAutoCalc() {
   document.addEventListener('input', function(e) {
-    if (e.target.dataset.field === 'height' || e.target.dataset.field === 'weight') calcBMI();
+    if (e.target.dataset.field === 'height' || e.target.dataset.field === 'weight') {
+      calcBMI();
+    }
   });
   document.addEventListener('change', function(e) {
     if (e.target.dataset.field === 'dob') calcAge();
   });
+}
 
-  // Also run on page load if values exist
-  setTimeout(() => { calcBMI(); calcAge(); }, 500);
+function calcBMI() {
+  const h = parseFloat(document.querySelector('[data-field="height"]')?.value);
+  const w = parseFloat(document.querySelector('[data-field="weight"]')?.value);
+  const bmiEl = document.querySelector('[data-field="bmi"]');
+  if (!bmiEl) return;
+  if (!h || !w || h < 50 || h > 300) { bmiEl.value = ''; return; }
+  const bmi = (w / Math.pow(h / 100, 2)).toFixed(1);
+  const cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+  bmiEl.value = bmi + ' (' + cat + ')';
+  bmiEl.style.color = bmi < 18.5 || bmi >= 30 ? 'var(--red)' : bmi < 25 ? 'var(--green-main)' : 'var(--amber)';
+  bmiEl.style.fontWeight = '600';
+}
+
+function calcAge() {
+  const dobEl = document.querySelector('[data-field="dob"]');
+  const ageEl = document.querySelector('[data-field="age"]');
+  if (!dobEl?.value || !ageEl) return;
+  const age = Math.floor((new Date() - new Date(dobEl.value)) / (365.25 * 24 * 60 * 60 * 1000));
+  ageEl.value = age + ' years';
+  ageEl.style.color = 'var(--green-main)';
+  ageEl.style.fontWeight = '600';
 }
 
 async function loadProfile() {
@@ -52,24 +50,23 @@ async function loadProfile() {
   const initials = (data.first_name[0] + data.last_name[0]).toUpperCase();
   const fullName  = data.first_name + ' ' + data.last_name;
 
-  document.querySelector('.profile-avatar-big').textContent = initials;
-  document.querySelector('.profile-name').textContent       = fullName;
-
-  // Calculate age
+  // Age
   let ageStr = '';
   if (data.dob) {
     const age = Math.floor((new Date() - new Date(data.dob)) / (365.25 * 24 * 60 * 60 * 1000));
-    ageStr = `${age} years`;
+    ageStr = age + ' years';
   }
 
-  // Calculate BMI
+  // BMI
   let bmiStr = '';
   if (data.height_cm && data.weight_kg) {
     const bmi = (data.weight_kg / Math.pow(data.height_cm / 100, 2)).toFixed(1);
-    let cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
-    bmiStr = `${bmi} (${cat})`;
+    const cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+    bmiStr = bmi + ' (' + cat + ')';
   }
 
+  document.querySelector('.profile-avatar-big').textContent = initials;
+  document.querySelector('.profile-name').textContent = fullName;
   document.querySelector('.profile-meta').innerHTML = `
     <span><i class="fa-solid fa-id-card"></i> CID: ${data.cid}</span>
     <span><i class="fa-solid fa-droplet"></i> Blood Group: ${data.blood_group || 'N/A'}</span>
@@ -110,7 +107,7 @@ function setField(name, value) {
 }
 
 function enableEdit(section) {
-  const card   = document.querySelector(`.edit-section-${section}`);
+  const card = document.querySelector(`.edit-section-${section}`);
   if (!card) return;
   const locked = ['cid', 'nationality', 'email', 'bmi', 'age'];
   card.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
@@ -128,27 +125,54 @@ function enableEdit(section) {
   }
 }
 
+// Section field mapping - only send fields for THIS section
+const sectionFields = {
+  personal: ['gender', 'dob'],
+  contact:  ['phone', 'dzongkhag', 'village'],
+  medical:  ['blood_group', 'height_cm', 'weight_kg']
+};
+
 async function saveSection(section) {
   const card = document.querySelector(`.edit-section-${section}`);
-  const get  = f => { const el = card.querySelector(`[data-field="${f}"]`); return el ? el.value : ''; };
-  const payload = {
-    phone:       get('phone'),
-    blood_group: get('blood_group'),
-    dzongkhag:   get('dzongkhag'),
-    village:     get('village'),
-    gender:      get('gender'),
-    dob:         get('dob'),
-    height_cm:   parseInt(get('height'))   || 0,
-    weight_kg:   parseFloat(get('weight')) || 0,
-  };
+  if (!card) return;
+
+  // Build payload with ONLY this section's fields
+  const payload = {};
+
+  if (section === 'personal') {
+    const gender = card.querySelector('[data-field="gender"]')?.value;
+    const dob    = card.querySelector('[data-field="dob"]')?.value;
+    if (gender !== undefined) payload.gender = gender;
+    if (dob    !== undefined) payload.dob    = dob;
+  }
+
+  if (section === 'contact') {
+    const phone     = card.querySelector('[data-field="phone"]')?.value;
+    const dzongkhag = card.querySelector('[data-field="dzongkhag"]')?.value;
+    const village   = card.querySelector('[data-field="village"]')?.value;
+    if (phone     !== undefined) payload.phone     = phone;
+    if (dzongkhag !== undefined) payload.dzongkhag = dzongkhag;
+    if (village   !== undefined) payload.village   = village;
+  }
+
+  if (section === 'medical') {
+    const blood_group = card.querySelector('[data-field="blood_group"]')?.value;
+    const height      = card.querySelector('[data-field="height"]')?.value;
+    const weight      = card.querySelector('[data-field="weight"]')?.value;
+    if (blood_group !== undefined) payload.blood_group = blood_group;
+    if (height      !== undefined) payload.height_cm   = parseInt(height)   || 0;
+    if (weight      !== undefined) payload.weight_kg   = parseFloat(weight) || 0;
+  }
+
   const token = getAuthToken();
   const res = await fetch('/api/profile', {
     method:  'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
     body:    JSON.stringify(payload)
   });
+
   if (res.ok) {
-    showToast('Profile updated successfully!', 'success');
+    showToast('Saved successfully!', 'success');
     card.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
       el.setAttribute('readonly', true);
       if (el.tagName === 'SELECT') el.setAttribute('disabled', true);
@@ -161,23 +185,91 @@ async function saveSection(section) {
       editBtn.className = 'btn btn-secondary btn-sm edit-btn';
       editBtn.onclick   = () => enableEdit(section);
     }
-    loadProfile();
+    loadProfile(); // Reload to show updated data
   } else {
-    showToast('Failed to save. Try again.', 'error');
+    const err = await res.json();
+    showToast('Failed: ' + (err.error || 'Try again'), 'error');
   }
 }
 
-// Override initBMICalculator to watch DOB from personal section too
-document.addEventListener('DOMContentLoaded', function() {
-  const dobEl = document.querySelector('[data-field="dob"]');
-  if (dobEl) {
-    dobEl.addEventListener('change', function() {
-      const ageEl = document.querySelector('[data-field="age"]');
-      if (!ageEl || !this.value) return;
-      const age = Math.floor((new Date() - new Date(this.value)) / (365.25 * 24 * 60 * 60 * 1000));
-      ageEl.value = age + ' years';
-      ageEl.style.color = 'var(--green-main)';
-      ageEl.style.fontWeight = '600';
-    });
+async function changePassword() {
+  const curPass = document.getElementById('cur-pass').value;
+  const newPass = document.getElementById('new-pass').value;
+  const conPass = document.getElementById('con-pass').value;
+
+  if (!curPass || !newPass || !conPass) {
+    showToast('Please fill in all password fields', 'error'); return;
   }
-});
+  if (newPass.length < 8) {
+    showToast('New password must be at least 8 characters', 'error'); return;
+  }
+  if (newPass !== conPass) {
+    showToast('New passwords do not match', 'error'); return;
+  }
+
+  const token = getAuthToken();
+  const res = await fetch('/api/profile/password', {
+    method:  'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+    body:    JSON.stringify({ current_password: curPass, new_password: newPass })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    showToast('Password updated successfully!', 'success');
+    document.getElementById('cur-pass').value = '';
+    document.getElementById('new-pass').value = '';
+    document.getElementById('con-pass').value = '';
+  } else {
+    showToast(data.error || 'Failed to update password', 'error');
+  }
+}
+
+function togglePwd(id, btn) {
+  const input = document.getElementById(id);
+  const icon  = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fa-solid fa-eye-slash';
+    btn.style.color = 'var(--green-main)';
+  } else {
+    input.type = 'password';
+    icon.className = 'fa-solid fa-eye';
+    btn.style.color = 'var(--text-muted)';
+  }
+}
+
+function checkPwdStrength(val) {
+  const segs  = ['ps1','ps2','ps3'].map(id => document.getElementById(id));
+  const label = document.getElementById('pwd-strength-label');
+  if (!segs[0] || !label) return;
+  segs.forEach(s => { if(s) s.style.background = 'var(--border)'; });
+  label.textContent = '';
+  if (!val) return;
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ['', '#ef4444', '#f59e0b', '#10b981'];
+  const labels = ['', 'Weak', 'Fair', 'Strong'];
+  const lColors = ['', '#ef4444', '#f59e0b', '#10b981'];
+  for (let i = 0; i < score; i++) {
+    if (segs[i]) segs[i].style.background = colors[score];
+  }
+  label.textContent  = labels[score];
+  label.style.color  = lColors[score];
+}
+
+function checkPwdMatch() {
+  const newPass = document.getElementById('new-pass')?.value;
+  const conPass = document.getElementById('con-pass')?.value;
+  const label   = document.getElementById('pwd-match-label');
+  if (!label || !conPass) return;
+  if (newPass === conPass) {
+    label.textContent = '✓ Passwords match';
+    label.style.color = 'var(--green-main)';
+  } else {
+    label.textContent = '✗ Passwords do not match';
+    label.style.color = 'var(--red)';
+  }
+}
