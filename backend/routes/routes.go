@@ -4,6 +4,7 @@ import (
 	"bhutancare/handlers"
 	"bhutancare/middleware"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -40,7 +41,11 @@ func Setup() http.Handler {
 	api.HandleFunc("/prescriptions",     handlers.PrescriptionsHandler).Methods("GET", "POST")
 
 	// Serve frontend
-	frontend := http.FileServer(http.Dir("/workspaces/my-app/frontend/"))
+	frontendPath := os.Getenv("FRONTEND_PATH")
+	if frontendPath == "" {
+		frontendPath = "../frontend"
+	}
+	frontend := http.FileServer(http.Dir(frontendPath))
 	r.PathPrefix("/").Handler(frontend)
 
 	c := cors.New(cors.Options{
