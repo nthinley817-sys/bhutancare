@@ -3,6 +3,7 @@ package routes
 import (
 	"bhutancare/handlers"
 	"bhutancare/middleware"
+	"log"
 	"net/http"
 	"os"
 
@@ -43,18 +44,9 @@ func Setup() http.Handler {
 	// Serve frontend
 	frontendPath := os.Getenv("FRONTEND_PATH")
 	if frontendPath == "" {
-		// Try different paths for different environments
-		paths := []string{"../frontend", "./frontend", "/app/frontend"}
-		for _, p := range paths {
-			if _, err := os.Stat(p); err == nil {
-				frontendPath = p
-				break
-			}
-		}
-		if frontendPath == "" {
-			frontendPath = "../frontend"
-		}
+		frontendPath = "../frontend"
 	}
+	log.Println("Frontend path:", frontendPath)
 	frontend := http.FileServer(http.Dir(frontendPath))
 	r.PathPrefix("/").Handler(frontend)
 
