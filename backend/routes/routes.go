@@ -12,6 +12,11 @@ import (
 func Setup() http.Handler {
 	r := mux.NewRouter()
 
+	// Redirect root to homepage
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/pages/homepage.html", http.StatusFound)
+	}).Methods("GET")
+
 	// Public routes
 	r.HandleFunc("/api/auth/register", handlers.RegisterHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/auth/login",    handlers.LoginHandler).Methods("POST", "OPTIONS")
