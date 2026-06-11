@@ -1,4 +1,3 @@
-// Active nav highlight
 function setActiveNav() {
   const page = window.location.pathname.split('/').pop() || 'dashboard.html';
   document.querySelectorAll('.nav-item').forEach(el => {
@@ -7,7 +6,6 @@ function setActiveNav() {
   });
 }
 
-// Sidebar toggle mobile
 function initSidebar() {
   const btn  = document.getElementById('hamburgerBtn');
   const side = document.getElementById('sidebar');
@@ -26,7 +24,6 @@ function initSidebar() {
   });
 }
 
-// Toast notifications
 function showToast(msg, type = 'success', duration = 3000) {
   let container = document.querySelector('.toast-container');
   if (!container) {
@@ -48,7 +45,6 @@ function showToast(msg, type = 'success', duration = 3000) {
   }, duration);
 }
 
-// Modal helpers
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -71,7 +67,6 @@ function initModals() {
   });
 }
 
-// Auth helpers
 function getAuthToken()  { return localStorage.getItem('bhutancare_token'); }
 function clearAuthData() {
   localStorage.removeItem('bhutancare_token');
@@ -116,6 +111,40 @@ async function apiCall(endpoint, options = {}) {
   return res.json();
 }
 
+// Load and display real user info on every page
+async function loadSharedUserInfo() {
+  const token = getAuthToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch('/api/profile', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    const initials = (data.first_name[0] + data.last_name[0]).toUpperCase();
+    const fullName = data.first_name + ' ' + data.last_name;
+
+    // Update sidebar user info
+    const sidebarName   = document.querySelector('.sidebar-user-name');
+    const sidebarAvatar = document.querySelector('.sidebar-avatar');
+    const sidebarRole   = document.querySelector('.sidebar-user-role');
+    if (sidebarName)   sidebarName.textContent   = fullName;
+    if (sidebarAvatar) sidebarAvatar.textContent = initials;
+    if (sidebarRole)   sidebarRole.textContent   = 'Patient · CID ' + data.cid.substring(0,8) + '...';
+
+    // Update topnav avatar
+    const avatarBtn = document.querySelector('.avatar-btn');
+    if (avatarBtn) avatarBtn.textContent = initials;
+
+    // Store for other functions to use
+    window.currentUser = data;
+  } catch (e) {
+    console.log('Could not load user info:', e);
+  }
+}
+
 function initLogoutButton() {
   const topnav = document.querySelector('.topnav-right');
   if (!topnav || topnav.querySelector('.logout-btn')) return;
@@ -133,4 +162,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initSidebar();
   initModals();
   initLogoutButton();
+  loadSharedUserInfo(); // Load real user on every page
 });
